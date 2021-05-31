@@ -75,12 +75,7 @@ final class CaptureSession: NSObject, ObservableObject {
         captureSession.beginConfiguration()
 
         if captureSession.canAddOutput(videoDataOutput) {
-            for input in captureSession.inputs {
-                captureSession.removeInput(input)
-            }
-
-                captureSession.addOutput(videoDataOutput)
-            
+            captureSession.addOutput(videoDataOutput)
         }
 
         // isEnable: Indicates whether the connection's output should consume data. このプロパティの値は、セッションの実行時にレシーバーの出力が接続された inputPort からのデータを消費するかどうかを決定する BOOL です。クライアントは、このプロパティを設定して、キャプチャ中に特定の出力へのデータの流れを停止できます。デフォルト値は YES です。
