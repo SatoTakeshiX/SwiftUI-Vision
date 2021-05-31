@@ -1,0 +1,579 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		30A4DC562664DE49005E0B30 /* Realtime_Face_TrackingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC552664DE49005E0B30 /* Realtime_Face_TrackingApp.swift */; };
+		30A4DC582664DE49005E0B30 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC572664DE49005E0B30 /* ContentView.swift */; };
+		30A4DC5A2664DE4B005E0B30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30A4DC592664DE4B005E0B30 /* Assets.xcassets */; };
+		30A4DC5D2664DE4B005E0B30 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30A4DC5C2664DE4B005E0B30 /* Preview Assets.xcassets */; };
+		30A4DC682664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC672664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift */; };
+		30A4DC732664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC722664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		30A4DC642664DE4B005E0B30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30A4DC4A2664DE49005E0B30 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 30A4DC512664DE49005E0B30;
+			remoteInfo = "Realtime-Face-Tracking";
+		};
+		30A4DC6F2664DE4B005E0B30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30A4DC4A2664DE49005E0B30 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 30A4DC512664DE49005E0B30;
+			remoteInfo = "Realtime-Face-Tracking";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		30A4DC522664DE49005E0B30 /* Realtime-Face-Tracking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Realtime-Face-Tracking.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30A4DC552664DE49005E0B30 /* Realtime_Face_TrackingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime_Face_TrackingApp.swift; sourceTree = "<group>"; };
+		30A4DC572664DE49005E0B30 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		30A4DC592664DE4B005E0B30 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		30A4DC5C2664DE4B005E0B30 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		30A4DC5E2664DE4B005E0B30 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30A4DC632664DE4B005E0B30 /* Realtime-Face-TrackingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Realtime-Face-TrackingTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30A4DC672664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime_Face_TrackingTests.swift; sourceTree = "<group>"; };
+		30A4DC692664DE4B005E0B30 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30A4DC6E2664DE4B005E0B30 /* Realtime-Face-TrackingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Realtime-Face-TrackingUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		30A4DC722664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime_Face_TrackingUITests.swift; sourceTree = "<group>"; };
+		30A4DC742664DE4B005E0B30 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		30A4DC4F2664DE49005E0B30 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30A4DC602664DE4B005E0B30 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30A4DC6B2664DE4B005E0B30 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		30A4DC492664DE49005E0B30 = {
+			isa = PBXGroup;
+			children = (
+				30A4DC542664DE49005E0B30 /* Realtime-Face-Tracking */,
+				30A4DC662664DE4B005E0B30 /* Realtime-Face-TrackingTests */,
+				30A4DC712664DE4B005E0B30 /* Realtime-Face-TrackingUITests */,
+				30A4DC532664DE49005E0B30 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		30A4DC532664DE49005E0B30 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				30A4DC522664DE49005E0B30 /* Realtime-Face-Tracking.app */,
+				30A4DC632664DE4B005E0B30 /* Realtime-Face-TrackingTests.xctest */,
+				30A4DC6E2664DE4B005E0B30 /* Realtime-Face-TrackingUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		30A4DC542664DE49005E0B30 /* Realtime-Face-Tracking */ = {
+			isa = PBXGroup;
+			children = (
+				30A4DC552664DE49005E0B30 /* Realtime_Face_TrackingApp.swift */,
+				30A4DC572664DE49005E0B30 /* ContentView.swift */,
+				30A4DC592664DE4B005E0B30 /* Assets.xcassets */,
+				30A4DC5E2664DE4B005E0B30 /* Info.plist */,
+				30A4DC5B2664DE4B005E0B30 /* Preview Content */,
+			);
+			path = "Realtime-Face-Tracking";
+			sourceTree = "<group>";
+		};
+		30A4DC5B2664DE4B005E0B30 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				30A4DC5C2664DE4B005E0B30 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		30A4DC662664DE4B005E0B30 /* Realtime-Face-TrackingTests */ = {
+			isa = PBXGroup;
+			children = (
+				30A4DC672664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift */,
+				30A4DC692664DE4B005E0B30 /* Info.plist */,
+			);
+			path = "Realtime-Face-TrackingTests";
+			sourceTree = "<group>";
+		};
+		30A4DC712664DE4B005E0B30 /* Realtime-Face-TrackingUITests */ = {
+			isa = PBXGroup;
+			children = (
+				30A4DC722664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift */,
+				30A4DC742664DE4B005E0B30 /* Info.plist */,
+			);
+			path = "Realtime-Face-TrackingUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		30A4DC512664DE49005E0B30 /* Realtime-Face-Tracking */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30A4DC772664DE4B005E0B30 /* Build configuration list for PBXNativeTarget "Realtime-Face-Tracking" */;
+			buildPhases = (
+				30A4DC4E2664DE49005E0B30 /* Sources */,
+				30A4DC4F2664DE49005E0B30 /* Frameworks */,
+				30A4DC502664DE49005E0B30 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Realtime-Face-Tracking";
+			productName = "Realtime-Face-Tracking";
+			productReference = 30A4DC522664DE49005E0B30 /* Realtime-Face-Tracking.app */;
+			productType = "com.apple.product-type.application";
+		};
+		30A4DC622664DE4B005E0B30 /* Realtime-Face-TrackingTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30A4DC7A2664DE4B005E0B30 /* Build configuration list for PBXNativeTarget "Realtime-Face-TrackingTests" */;
+			buildPhases = (
+				30A4DC5F2664DE4B005E0B30 /* Sources */,
+				30A4DC602664DE4B005E0B30 /* Frameworks */,
+				30A4DC612664DE4B005E0B30 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				30A4DC652664DE4B005E0B30 /* PBXTargetDependency */,
+			);
+			name = "Realtime-Face-TrackingTests";
+			productName = "Realtime-Face-TrackingTests";
+			productReference = 30A4DC632664DE4B005E0B30 /* Realtime-Face-TrackingTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		30A4DC6D2664DE4B005E0B30 /* Realtime-Face-TrackingUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30A4DC7D2664DE4B005E0B30 /* Build configuration list for PBXNativeTarget "Realtime-Face-TrackingUITests" */;
+			buildPhases = (
+				30A4DC6A2664DE4B005E0B30 /* Sources */,
+				30A4DC6B2664DE4B005E0B30 /* Frameworks */,
+				30A4DC6C2664DE4B005E0B30 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				30A4DC702664DE4B005E0B30 /* PBXTargetDependency */,
+			);
+			name = "Realtime-Face-TrackingUITests";
+			productName = "Realtime-Face-TrackingUITests";
+			productReference = 30A4DC6E2664DE4B005E0B30 /* Realtime-Face-TrackingUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		30A4DC4A2664DE49005E0B30 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					30A4DC512664DE49005E0B30 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+					30A4DC622664DE4B005E0B30 = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 30A4DC512664DE49005E0B30;
+					};
+					30A4DC6D2664DE4B005E0B30 = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 30A4DC512664DE49005E0B30;
+					};
+				};
+			};
+			buildConfigurationList = 30A4DC4D2664DE49005E0B30 /* Build configuration list for PBXProject "Realtime-Face-Tracking" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 30A4DC492664DE49005E0B30;
+			productRefGroup = 30A4DC532664DE49005E0B30 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				30A4DC512664DE49005E0B30 /* Realtime-Face-Tracking */,
+				30A4DC622664DE4B005E0B30 /* Realtime-Face-TrackingTests */,
+				30A4DC6D2664DE4B005E0B30 /* Realtime-Face-TrackingUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		30A4DC502664DE49005E0B30 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30A4DC5D2664DE4B005E0B30 /* Preview Assets.xcassets in Resources */,
+				30A4DC5A2664DE4B005E0B30 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30A4DC612664DE4B005E0B30 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30A4DC6C2664DE4B005E0B30 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		30A4DC4E2664DE49005E0B30 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30A4DC582664DE49005E0B30 /* ContentView.swift in Sources */,
+				30A4DC562664DE49005E0B30 /* Realtime_Face_TrackingApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30A4DC5F2664DE4B005E0B30 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30A4DC682664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30A4DC6A2664DE4B005E0B30 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30A4DC732664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		30A4DC652664DE4B005E0B30 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 30A4DC512664DE49005E0B30 /* Realtime-Face-Tracking */;
+			targetProxy = 30A4DC642664DE4B005E0B30 /* PBXContainerItemProxy */;
+		};
+		30A4DC702664DE4B005E0B30 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 30A4DC512664DE49005E0B30 /* Realtime-Face-Tracking */;
+			targetProxy = 30A4DC6F2664DE4B005E0B30 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		30A4DC752664DE4B005E0B30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		30A4DC762664DE4B005E0B30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		30A4DC782664DE4B005E0B30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"Realtime-Face-Tracking/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Realtime-Face-Tracking/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Personal-Factory.Realtime-Face-Tracking";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		30A4DC792664DE4B005E0B30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"Realtime-Face-Tracking/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "Realtime-Face-Tracking/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Personal-Factory.Realtime-Face-Tracking";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		30A4DC7B2664DE4B005E0B30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Realtime-Face-TrackingTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Personal-Factory.Realtime-Face-TrackingTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Realtime-Face-Tracking.app/Realtime-Face-Tracking";
+			};
+			name = Debug;
+		};
+		30A4DC7C2664DE4B005E0B30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Realtime-Face-TrackingTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Personal-Factory.Realtime-Face-TrackingTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Realtime-Face-Tracking.app/Realtime-Face-Tracking";
+			};
+			name = Release;
+		};
+		30A4DC7E2664DE4B005E0B30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Realtime-Face-TrackingUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Personal-Factory.Realtime-Face-TrackingUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Realtime-Face-Tracking";
+			};
+			name = Debug;
+		};
+		30A4DC7F2664DE4B005E0B30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Realtime-Face-TrackingUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Personal-Factory.Realtime-Face-TrackingUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Realtime-Face-Tracking";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		30A4DC4D2664DE49005E0B30 /* Build configuration list for PBXProject "Realtime-Face-Tracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30A4DC752664DE4B005E0B30 /* Debug */,
+				30A4DC762664DE4B005E0B30 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		30A4DC772664DE4B005E0B30 /* Build configuration list for PBXNativeTarget "Realtime-Face-Tracking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30A4DC782664DE4B005E0B30 /* Debug */,
+				30A4DC792664DE4B005E0B30 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		30A4DC7A2664DE4B005E0B30 /* Build configuration list for PBXNativeTarget "Realtime-Face-TrackingTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30A4DC7B2664DE4B005E0B30 /* Debug */,
+				30A4DC7C2664DE4B005E0B30 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		30A4DC7D2664DE4B005E0B30 /* Build configuration list for PBXNativeTarget "Realtime-Face-TrackingUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30A4DC7E2664DE4B005E0B30 /* Debug */,
+				30A4DC7F2664DE4B005E0B30 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 30A4DC4A2664DE49005E0B30 /* Project object */;
+}
