@@ -8,23 +8,28 @@
 import Foundation
 import AVKit
 
-final class CaptureSession: NSObject {
+final class CaptureSession: NSObject, ObservableObject {
     private let captureSession = AVCaptureSession()
     private var captureDevice: AVCaptureDevice?
 
     private var videoDataOutput: AVCaptureVideoDataOutput?
     private var videoDataOutputQueue: DispatchQueue?
-    private(set) var previewLayer: AVCaptureVideoPreviewLayer?
+    @Published private(set) var previewLayer: AVCaptureVideoPreviewLayer?
+
+    override init() {
+        super.init()
+        setupCaptureSession()
+    }
 
     /// MARK: - Create capture session
-    func setupCaptureSession() {
+    private func setupCaptureSession() {
 
         captureSession.sessionPreset = .photo
 
         // use front camera
         if let availableDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera],
                                                                   mediaType: .video,
-                                                                  position: .front).devices.first {
+                                                                  position: .back).devices.first {
             captureDevice = availableDevice
             do {
                 let captureDeviceInput = try AVCaptureDeviceInput(device: availableDevice)
@@ -36,6 +41,16 @@ final class CaptureSession: NSObject {
 
         makePreviewLayser(session: captureSession)
         makeDataOutput()
+    }
+
+    func startSettion() {
+        if captureSession.isRunning { return }
+        captureSession.startRunning()
+    }
+
+    func stopSettion() {
+        if !captureSession.isRunning { return }
+        captureSession.stopRunning()
     }
 
     private func makePreviewLayser(session: AVCaptureSession) {
@@ -57,8 +72,15 @@ final class CaptureSession: NSObject {
         let videoDataOutputQueue = DispatchQueue(label: "com.Personal-Factory.Realtime-Face-Tracking")
         videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
 
+        captureSession.beginConfiguration()
+
         if captureSession.canAddOutput(videoDataOutput) {
-            captureSession.addOutput(videoDataOutput)
+            for input in captureSession.inputs {
+                captureSession.removeInput(input)
+            }
+
+                captureSession.addOutput(videoDataOutput)
+            
         }
 
         // isEnable: Indicates whether the connection's output should consume data. このプロパティの値は、セッションの実行時にレシーバーの出力が接続された inputPort からのデータを消費するかどうかを決定する BOOL です。クライアントは、このプロパティを設定して、キャプチャ中に特定の出力へのデータの流れを停止できます。デフォルト値は YES です。
@@ -73,6 +95,8 @@ final class CaptureSession: NSObject {
 
         self.videoDataOutput = videoDataOutput
         self.videoDataOutputQueue = videoDataOutputQueue
+
+        captureSession.commitConfiguration()
     }
 
     // Removes infrastructure for AVCapture as part of cleanup.

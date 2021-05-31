@@ -14,6 +14,7 @@
 		30A4DC682664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC672664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift */; };
 		30A4DC732664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC722664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift */; };
 		30A4DC832664E3CB005E0B30 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC822664E3CB005E0B30 /* CaptureSession.swift */; };
+		30A4DC862664FE56005E0B30 /* CustomLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC852664FE56005E0B30 /* CustomLayerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		30A4DC722664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime_Face_TrackingUITests.swift; sourceTree = "<group>"; };
 		30A4DC742664DE4B005E0B30 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30A4DC822664E3CB005E0B30 /* CaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
+		30A4DC852664FE56005E0B30 /* CustomLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,10 +99,10 @@
 		30A4DC542664DE49005E0B30 /* Realtime-Face-Tracking */ = {
 			isa = PBXGroup;
 			children = (
+				30A4DC842664FE0F005E0B30 /* View */,
 				30A4DC802664E35A005E0B30 /* Model */,
 				30A4DC812664E366005E0B30 /* Scene */,
 				30A4DC552664DE49005E0B30 /* Realtime_Face_TrackingApp.swift */,
-				30A4DC572664DE49005E0B30 /* ContentView.swift */,
 				30A4DC592664DE4B005E0B30 /* Assets.xcassets */,
 				30A4DC5E2664DE4B005E0B30 /* Info.plist */,
 				30A4DC5B2664DE4B005E0B30 /* Preview Content */,
@@ -145,8 +147,17 @@
 		30A4DC812664E366005E0B30 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
+				30A4DC572664DE49005E0B30 /* ContentView.swift */,
 			);
 			path = Scene;
+			sourceTree = "<group>";
+		};
+		30A4DC842664FE0F005E0B30 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				30A4DC852664FE56005E0B30 /* CustomLayerView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,6 +292,7 @@
 				30A4DC582664DE49005E0B30 /* ContentView.swift in Sources */,
 				30A4DC562664DE49005E0B30 /* Realtime_Face_TrackingApp.swift in Sources */,
 				30A4DC832664E3CB005E0B30 /* CaptureSession.swift in Sources */,
+				30A4DC862664FE56005E0B30 /* CustomLayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +451,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Realtime-Face-Tracking/Preview Content\"";
+				DEVELOPMENT_TEAM = WNEUDLL4LF;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Realtime-Face-Tracking/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -460,6 +473,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Realtime-Face-Tracking/Preview Content\"";
+				DEVELOPMENT_TEAM = WNEUDLL4LF;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "Realtime-Face-Tracking/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
