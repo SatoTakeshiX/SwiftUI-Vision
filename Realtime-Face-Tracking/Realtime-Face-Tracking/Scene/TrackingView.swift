@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct TrackingView: View {
-    @StateObject var session = CaptureSession() // initでsessionを作成しないとpreviewで表示されない
+    @StateObject var viewModel = TrackingViewModel() // initでsessionを作成しないとpreviewで表示されない
     var body: some View {
         #if targetEnvironment(simulator)
         Text("please run on real device")
         #else
         ZStack {
-            CustomLayerView(layer: session.previewLayer ?? CALayer())
+            CustomLayerView(layer: viewModel.previewLayer)
         }
         .edgesIgnoringSafeArea(.all)
         .onAppear {
-            session.startSettion()
+            viewModel.startSession()
         }
         #endif
     }

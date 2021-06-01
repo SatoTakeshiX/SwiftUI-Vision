@@ -7,14 +7,23 @@
 
 import Foundation
 import AVKit
+import Combine
 
 final class CaptureSession: NSObject, ObservableObject {
+
+    struct Outputs {
+        let cameraIntrinsicData: CFTypeRef
+        let pixelBuffer: CVImageBuffer
+
+    }
     private let captureSession = AVCaptureSession()
     private var captureDevice: AVCaptureDevice?
 
     private var videoDataOutput: AVCaptureVideoDataOutput?
     private var videoDataOutputQueue: DispatchQueue?
-    @Published private(set) var previewLayer: AVCaptureVideoPreviewLayer?
+    private(set) var previewLayer = AVCaptureVideoPreviewLayer()
+
+    var outputs = PassthroughSubject<Outputs, Never>()
 
     override init() {
         super.init()
@@ -95,19 +104,26 @@ final class CaptureSession: NSObject, ObservableObject {
     }
 
     // Removes infrastructure for AVCapture as part of cleanup.
-    private func teardownAVCapture() {
-        self.videoDataOutput = nil
-        self.videoDataOutputQueue = nil
-
-        if let previewLayer = previewLayer {
-            previewLayer.removeFromSuperlayer()
-            self.previewLayer = nil
-        }
-    }
+//    private func teardownAVCapture() {
+//        self.videoDataOutput = nil
+//        self.videoDataOutputQueue = nil
+//
+//        if let previewLayer = previewLayer {
+//            previewLayer.removeFromSuperlayer()
+//            self.previewLayer = nil
+//        }
+//    }
 }
 
 extension CaptureSession: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-
+        guard let cameraIntrinsicData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) else {
+            return
+        }
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            print("Failed to obtain a CVPixelBuffer for the current output frame.")
+            return
+        }
+        self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData, pixelBuffer: pixelBuffer))
     }
 }
