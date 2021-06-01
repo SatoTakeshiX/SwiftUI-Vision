@@ -8,13 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		30A4DC562664DE49005E0B30 /* Realtime_Face_TrackingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC552664DE49005E0B30 /* Realtime_Face_TrackingApp.swift */; };
-		30A4DC582664DE49005E0B30 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC572664DE49005E0B30 /* ContentView.swift */; };
+		30A4DC582664DE49005E0B30 /* TrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC572664DE49005E0B30 /* TrackingView.swift */; };
 		30A4DC5A2664DE4B005E0B30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30A4DC592664DE4B005E0B30 /* Assets.xcassets */; };
 		30A4DC5D2664DE4B005E0B30 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30A4DC5C2664DE4B005E0B30 /* Preview Assets.xcassets */; };
 		30A4DC682664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC672664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift */; };
 		30A4DC732664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC722664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift */; };
 		30A4DC832664E3CB005E0B30 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC822664E3CB005E0B30 /* CaptureSession.swift */; };
 		30A4DC862664FE56005E0B30 /* CustomLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC852664FE56005E0B30 /* CustomLayerView.swift */; };
+		30A4DC8826668420005E0B30 /* TrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC8726668420005E0B30 /* TrackingViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +38,7 @@
 /* Begin PBXFileReference section */
 		30A4DC522664DE49005E0B30 /* Realtime-Face-Tracking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Realtime-Face-Tracking.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30A4DC552664DE49005E0B30 /* Realtime_Face_TrackingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime_Face_TrackingApp.swift; sourceTree = "<group>"; };
-		30A4DC572664DE49005E0B30 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		30A4DC572664DE49005E0B30 /* TrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingView.swift; sourceTree = "<group>"; };
 		30A4DC592664DE4B005E0B30 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		30A4DC5C2664DE4B005E0B30 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		30A4DC5E2664DE4B005E0B30 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,6 +50,7 @@
 		30A4DC742664DE4B005E0B30 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30A4DC822664E3CB005E0B30 /* CaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
 		30A4DC852664FE56005E0B30 /* CustomLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayerView.swift; sourceTree = "<group>"; };
+		30A4DC8726668420005E0B30 /* TrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +149,8 @@
 		30A4DC812664E366005E0B30 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
-				30A4DC572664DE49005E0B30 /* ContentView.swift */,
+				30A4DC572664DE49005E0B30 /* TrackingView.swift */,
+				30A4DC8726668420005E0B30 /* TrackingViewModel.swift */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -289,10 +292,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30A4DC582664DE49005E0B30 /* ContentView.swift in Sources */,
+				30A4DC582664DE49005E0B30 /* TrackingView.swift in Sources */,
 				30A4DC562664DE49005E0B30 /* Realtime_Face_TrackingApp.swift in Sources */,
 				30A4DC832664E3CB005E0B30 /* CaptureSession.swift in Sources */,
 				30A4DC862664FE56005E0B30 /* CustomLayerView.swift in Sources */,
+				30A4DC8826668420005E0B30 /* TrackingViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
