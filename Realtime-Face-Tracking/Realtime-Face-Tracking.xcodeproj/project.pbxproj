@@ -16,6 +16,7 @@
 		30A4DC832664E3CB005E0B30 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC822664E3CB005E0B30 /* CaptureSession.swift */; };
 		30A4DC862664FE56005E0B30 /* CustomLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC852664FE56005E0B30 /* CustomLayerView.swift */; };
 		30A4DC8826668420005E0B30 /* TrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC8726668420005E0B30 /* TrackingViewModel.swift */; };
+		30A4DC8A2669287A005E0B30 /* VisionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC892669287A005E0B30 /* VisionClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		30A4DC822664E3CB005E0B30 /* CaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSession.swift; sourceTree = "<group>"; };
 		30A4DC852664FE56005E0B30 /* CustomLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayerView.swift; sourceTree = "<group>"; };
 		30A4DC8726668420005E0B30 /* TrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingViewModel.swift; sourceTree = "<group>"; };
+		30A4DC892669287A005E0B30 /* VisionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				30A4DC822664E3CB005E0B30 /* CaptureSession.swift */,
+				30A4DC892669287A005E0B30 /* VisionClient.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 				30A4DC562664DE49005E0B30 /* Realtime_Face_TrackingApp.swift in Sources */,
 				30A4DC832664E3CB005E0B30 /* CaptureSession.swift in Sources */,
 				30A4DC862664FE56005E0B30 /* CustomLayerView.swift in Sources */,
+				30A4DC8A2669287A005E0B30 /* VisionClient.swift in Sources */,
 				30A4DC8826668420005E0B30 /* TrackingViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
