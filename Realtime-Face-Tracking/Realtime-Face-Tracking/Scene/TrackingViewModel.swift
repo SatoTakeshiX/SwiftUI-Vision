@@ -8,6 +8,7 @@
 import Combine
 import UIKit
 import Vision
+import AVKit
 
 protocol ViewModelable {
     associatedtype Output
@@ -33,7 +34,7 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
     let captureSession = CaptureSession()
     let visionClient = VisionClient(mode: .faceLandmark)
 
-    var previewLayer: CALayer {
+    var previewLayer: AVCaptureVideoPreviewLayer {
         return captureSession.previewLayer
     }
 
@@ -45,6 +46,8 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
         bind()
     }
 
+    var resolution: CGSize = .zero
+
     func bind() {
         captureSession.outputs.sink { [weak self] output in
             guard let self = self else { return }
@@ -54,6 +57,7 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
                 requestHandlerOptions[VNImageOption.cameraIntrinsics] = cameraIntrinsicData
             }
 
+            self.resolution = output.resolution
             self.visionClient.request(cvPixelBuffer: output.pixelBuffer,
                                       orientation: self.exifOrientationForDeviceOrientation(UIDevice.current.orientation),
                                       options: requestHandlerOptions)
@@ -95,15 +99,6 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
     }
 
     func drawFaceObservations(_ faceObservations: [VNFaceObservation]) {
-
-        /**
-         in landmarkRegion: VNFaceLandmarkRegion2D,
-                                    applying affineTransform: CGAffineTransform,
-                                    closingWhenComplete closePath: Bool
-         この3つが必要
-         */
-
-
         /**
          pathはSwiftUIで扱う
          */
@@ -111,18 +106,51 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
         for observation in faceObservations {
             // appleでは端末の解像度を計算している
             // iPhone 12 proで(4032.0, 3024.0)
-            // UIScreen.mainは足りない：width_1170.0_height:2532.0
-            // UIScreen.main.nativeBounds, UIScreen.main.nativeSlace：width_3510.0_height:7596.0
-            let deviceRect = UIScreen.main.bounds
-            let scale = UIScreen.main.scale
-
-            let faceBounds = VNImageRectForNormalizedRect(observation.boundingBox, Int(deviceRect.width * scale), Int(deviceRect.height * scale))
-
+            // 他の人がどうやっているのかが気になる。
+            print(resolution.debugDescription) // (4032.0, 3024.0) on iPhone 12 Pro
+            let faceBounds = VNImageRectForNormalizedRect(observation.boundingBox, Int(resolution.width), Int(resolution.height))
             output = .init(faceRect: faceBounds)
+
+            // ある方向に向けるとVisionのoutputが止まる。なんでだ？
+
+            let videoPreviewRect = previewLayer.layerRectConverted(fromMetadataOutputRect: CGRect(x: 0, y: 0, width: 1, height: 1))
+
+            var rotation: CGFloat
+            var scaleX: CGFloat
+            var scaleY: CGFloat
+
+            // Rotate the layer into screen orientation.
+            switch UIDevice.current.orientation {
+            case .portraitUpsideDown:
+                rotation = 180
+                scaleX = videoPreviewRect.width / resolution.width
+                scaleY = videoPreviewRect.height / resolution.height
+
+            case .landscapeLeft:
+                rotation = 90
+                scaleX = videoPreviewRect.height / resolution.width
+                scaleY = scaleX
+
+            case .landscapeRight:
+                rotation = -90
+                scaleX = videoPreviewRect.height / resolution.width
+                scaleY = scaleX
+
+            default:
+                rotation = 0
+                scaleX = videoPreviewRect.width / resolution.width
+                scaleY = videoPreviewRect.height / resolution.height
+            }
+
+            // Scale and mirror the image to ensure upright presentation.
+            let affineTransform = CGAffineTransform(rotationAngle: radiansForDegrees(rotation))
+                .scaledBy(x: scaleX, y: -scaleY)
+
+           // previewLayer.setAffineTransform(affineTransform)
         }
+    }
 
-
-
-        
+    fileprivate func radiansForDegrees(_ degrees: CGFloat) -> CGFloat {
+        return CGFloat(Double(degrees) * Double.pi / 180.0)
     }
 }

@@ -14,6 +14,7 @@ final class CaptureSession: NSObject, ObservableObject {
     struct Outputs {
         let cameraIntrinsicData: CFTypeRef
         let pixelBuffer: CVImageBuffer
+        let resolution: CGSize
 
     }
     private let captureSession = AVCaptureSession()
@@ -24,6 +25,8 @@ final class CaptureSession: NSObject, ObservableObject {
     private(set) var previewLayer = AVCaptureVideoPreviewLayer()
 
     var outputs = PassthroughSubject<Outputs, Never>()
+
+    private var captureDeviceResolution: CGSize = CGSize()
 
     override init() {
         super.init()
@@ -43,6 +46,14 @@ final class CaptureSession: NSObject, ObservableObject {
             do {
                 let captureDeviceInput = try AVCaptureDeviceInput(device: availableDevice)
                 captureSession.addInput(captureDeviceInput)
+
+                if let highestResolution = self.highestResolution420Format(for: availableDevice) {
+                    try availableDevice.lockForConfiguration()
+                    availableDevice.activeFormat = highestResolution.format
+                    availableDevice.unlockForConfiguration()
+
+                    self.captureDeviceResolution = highestResolution.resolution
+                }
             } catch {
                 print(error.localizedDescription)
             }
@@ -113,6 +124,32 @@ final class CaptureSession: NSObject, ObservableObject {
 //            self.previewLayer = nil
 //        }
 //    }
+
+    /// - Tag: ConfigureDeviceResolution
+    fileprivate func highestResolution420Format(for device: AVCaptureDevice) -> (format: AVCaptureDevice.Format, resolution: CGSize)? {
+        var highestResolutionFormat: AVCaptureDevice.Format? = nil
+        var highestResolutionDimensions = CMVideoDimensions(width: 0, height: 0)
+
+        for format in device.formats {
+            let deviceFormat = format as AVCaptureDevice.Format
+
+            let deviceFormatDescription = deviceFormat.formatDescription
+            if CMFormatDescriptionGetMediaSubType(deviceFormatDescription) == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
+                let candidateDimensions = CMVideoFormatDescriptionGetDimensions(deviceFormatDescription)
+                if (highestResolutionFormat == nil) || (candidateDimensions.width > highestResolutionDimensions.width) {
+                    highestResolutionFormat = deviceFormat
+                    highestResolutionDimensions = candidateDimensions
+                }
+            }
+        }
+
+        if highestResolutionFormat != nil {
+            let resolution = CGSize(width: CGFloat(highestResolutionDimensions.width), height: CGFloat(highestResolutionDimensions.height))
+            return (highestResolutionFormat!, resolution)
+        }
+
+        return nil
+    }
 }
 
 extension CaptureSession: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -124,6 +161,6 @@ extension CaptureSession: AVCaptureVideoDataOutputSampleBufferDelegate {
             print("Failed to obtain a CVPixelBuffer for the current output frame.")
             return
         }
-        self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData, pixelBuffer: pixelBuffer))
+        self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData, pixelBuffer: pixelBuffer, resolution: captureDeviceResolution))
     }
 }
