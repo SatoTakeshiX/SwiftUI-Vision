@@ -9,6 +9,7 @@ import Foundation
 import Vision
 import Combine
 
+
 final class VisionClient: NSObject, ObservableObject {
     enum Mode {
         case faceLandmark // appleのものと一緒
@@ -29,6 +30,8 @@ final class VisionClient: NSObject, ObservableObject {
         super.init()
         setup()
     }
+
+    
 
     func request(cvPixelBuffer pixelBuffer: CVPixelBuffer, orientation: CGImagePropertyOrientation, options: [VNImageOption : Any] = [:]) {
 

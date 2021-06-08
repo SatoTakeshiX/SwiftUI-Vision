@@ -17,12 +17,12 @@ struct TrackingView: View {
         ZStack {
             CustomLayerView(layer: viewModel.previewLayer)
 
-            Path { path in
-                path.addRect(viewModel.output?.faceRect ?? .zero)
-            }
-            .applying(.identity)
-            .stroke()
-            .fill(Color.red)
+//            Path { path in
+//                path.addRect(viewModel.output?.faceRect ?? .zero)
+//            }
+//            .applying(.identity)
+//            .stroke()
+//            .fill(Color.red)
         }
         .edgesIgnoringSafeArea(.all)
         .onAppear {
