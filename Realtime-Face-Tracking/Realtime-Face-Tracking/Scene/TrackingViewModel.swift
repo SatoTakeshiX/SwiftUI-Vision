@@ -96,6 +96,13 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
         }
     }
 
+    let detectedLayer: CALayer = {
+        let layer = CALayer()
+        layer.backgroundColor = UIColor.red.cgColor
+        layer.borderWidth = 4
+        return layer
+
+    }()
     func drawFaceObservations(_ faceObservations: [VNFaceObservation]) {
         /**
          pathはSwiftUIで扱う
@@ -105,6 +112,8 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
         let rect = convertBoundingBox(obs.boundingBox, deviceOrientation: UIDevice.current.orientation)
         let convertedRect = self.previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
         output = Output(faceRect: convertedRect)
+        detectedLayer.frame = convertedRect
+        previewLayer.addSublayer(detectedLayer)
 
 
 
