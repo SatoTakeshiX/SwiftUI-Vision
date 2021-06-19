@@ -161,6 +161,7 @@ final class DetectorViewModel: ObservableObject {
             for observation in results {
                 // withinImageBound => pathLayer.bound
                 let rectBox = self.boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: self.imageViewFrame)
+                print("detected Rect: \(rectBox.debugDescription)")
                 self.detectedFrame.append(rectBox)
             }
 //            self.draw(faces: results, onImageWithBounds: drawLayer.bounds)
@@ -179,7 +180,8 @@ final class DetectorViewModel: ObservableObject {
         // Reposition origin.
         rect.origin.x *= imageWidth
         rect.origin.x += bounds.origin.x
-        rect.origin.y = (1 - rect.origin.y) * imageHeight + bounds.origin.y
+        // 
+        rect.origin.y = (rect.origin.y) * imageHeight + bounds.origin.y
 
         // Rescale normalized coordinates.
         rect.size.width *= imageWidth

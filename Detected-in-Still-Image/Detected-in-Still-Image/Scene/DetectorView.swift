@@ -30,7 +30,7 @@ public struct DetectorView<Content>: View where Content: View {
                         }
                     }
                     .stroke(Color.blue, lineWidth: 2.0)
-                    //.scaleEffect(x: 1.0, y: -1.0, anchor: .center)
+                    .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
             builder()
         }
