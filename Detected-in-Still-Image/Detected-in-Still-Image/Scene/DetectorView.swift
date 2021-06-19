@@ -32,6 +32,14 @@ public struct DetectorView<Content>: View where Content: View {
                     .stroke(Color.blue, lineWidth: 2.0)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
+                .overlay(
+                    Path { path in
+                        path.addLines(viewModel.detectedFaceLandmarkPoints)
+                    }
+                    .applying(viewModel.landmarkAffineTransform)
+                    .stroke(Color.black, lineWidth: 2)
+                    .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
+                )
             builder()
         }
         .onAppear {

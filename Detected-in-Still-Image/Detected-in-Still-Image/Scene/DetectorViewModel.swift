@@ -15,6 +15,7 @@ final class DetectorViewModel: ObservableObject {
     @Published var image: UIImage = UIImage()
     @Published var imageViewFrame: CGRect = .zero
     @Published var detectedFrame: [CGRect] = []
+    @Published var detectedFaceLandmarkPoints: [CGPoint] = []
     func onAppear(image: UIImage) {
         self.image = image
         let correctedImage = scaleAndOrient(image: image)
@@ -52,7 +53,7 @@ final class DetectorViewModel: ObservableObject {
                                                         orientation: orientation,
                                                         options: [:])
 
-        let requests = [faceDetectionRequest]
+        let requests = [faceDetectionRequest, faceLandmarkRequest]
         // Send the requests to the request handler.
         DispatchQueue.global(qos: .userInitiated).async {
             do {
@@ -151,6 +152,7 @@ final class DetectorViewModel: ObservableObject {
     private func handleDetectedFaces(request: VNRequest?, error: Error?) {
         if let nsError = error as NSError? {
             //self.presentAlert("Face Detection Error", error: nsError)
+            print(nsError.debugDescription)
             return
         }
         // Perform drawing on the main thread.
@@ -164,8 +166,6 @@ final class DetectorViewModel: ObservableObject {
                 print("detected Rect: \(rectBox.debugDescription)")
                 self.detectedFrame.append(rectBox)
             }
-//            self.draw(faces: results, onImageWithBounds: drawLayer.bounds)
-//            drawLayer.setNeedsDisplay()
         }
     }
 
@@ -180,7 +180,7 @@ final class DetectorViewModel: ObservableObject {
         // Reposition origin.
         rect.origin.x *= imageWidth
         rect.origin.x += bounds.origin.x
-        // 
+        //
         rect.origin.y = (rect.origin.y) * imageHeight + bounds.origin.y
 
         // Rescale normalized coordinates.
@@ -189,6 +189,68 @@ final class DetectorViewModel: ObservableObject {
 
         return rect
     }
+
+    lazy var faceLandmarkRequest = VNDetectFaceLandmarksRequest(completionHandler: self.handleDetectedFaceLandmarks)
+
+    fileprivate func handleDetectedFaceLandmarks(request: VNRequest?, error: Error?) {
+        if let nsError = error as NSError? {
+            //self.presentAlert("Face Landmark Detection Error", error: nsError)
+            print(nsError.localizedDescription)
+            return
+        }
+        // Perform drawing on the main thread.
+        DispatchQueue.main.async {
+            guard let results = request?.results as? [VNFaceObservation] else {
+                    return
+            }
+            self.drawFeatures(onFaces: results, onImageWithBounds: self.imageViewFrame)
+        }
+    }
+
+    fileprivate func drawFeatures(onFaces faces: [VNFaceObservation], onImageWithBounds bounds: CGRect) {
+
+        for faceObservation in faces {
+            let faceBounds = boundingBox(forRegionOfInterest: faceObservation.boundingBox, withinImageBounds: bounds)
+            guard let landmarks = faceObservation.landmarks else {
+                continue
+            }
+
+            let affineTransform = CGAffineTransform(scaleX: faceBounds.size.width, y: faceBounds.size.height)
+
+            landmarkAffineTransform = affineTransform
+
+            // Treat eyebrows and lines as open-ended regions when drawing paths.
+            let openLandmarkRegions = [
+                landmarks.leftEyebrow,
+                landmarks.rightEyebrow,
+                landmarks.faceContour,
+                landmarks.noseCrest,
+                landmarks.medianLine
+            ].compactMap { $0 }
+
+            // Draw eyes, lips, and nose as closed regions.
+            let closedLandmarkRegions = [
+                landmarks.leftEye,
+                landmarks.rightEye,
+                landmarks.outerLips,
+                landmarks.innerLips,
+                landmarks.nose
+                ].compactMap { $0 } // Filter out missing regions.
+
+            // openLandmarkRegionsを使ってPointを作成する
+            for openLandmarkRegion in openLandmarkRegions {
+                guard openLandmarkRegion.pointCount > 1 else {
+                    return
+                }
+
+                print("open landmark: \(openLandmarkRegion.normalizedPoints)")
+                detectedFaceLandmarkPoints = openLandmarkRegion.normalizedPoints
+            }
+        }
+    }
+
+    @Published var landmarkAffineTransform: CGAffineTransform = .identity
+
 }
 
 // Convert UIImageOrientation to CGImageOrientation for use in Vision analysis.
