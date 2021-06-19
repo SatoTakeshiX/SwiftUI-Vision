@@ -9,8 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            DetectorView(image: UIImage(named: "people")!) {
+//                Text("ssss")
+//                    .foregroundColor(.blue)
+//                    .border(Color.green, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
+            }
+            List {
+                Text("sss")
+                Text("ddd")
+            }
+        }
     }
 }
 
