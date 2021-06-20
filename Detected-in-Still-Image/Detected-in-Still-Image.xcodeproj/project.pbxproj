@@ -15,6 +15,7 @@
 		308466AB2678F7880003A012 /* Detected_in_Still_ImageUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308466AA2678F7880003A012 /* Detected_in_Still_ImageUITests.swift */; };
 		308466BA2678F7D70003A012 /* DetectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308466B92678F7D70003A012 /* DetectorView.swift */; };
 		308466BC267B98AA0003A012 /* DetectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308466BB267B98AA0003A012 /* DetectorViewModel.swift */; };
+		30874FA3267F221D009659B6 /* VisionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30874FA2267F221D009659B6 /* VisionClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		308466AC2678F7880003A012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		308466B92678F7D70003A012 /* DetectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectorView.swift; sourceTree = "<group>"; };
 		308466BB267B98AA0003A012 /* DetectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectorViewModel.swift; sourceTree = "<group>"; };
+		30874FA2267F221D009659B6 /* VisionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		3084668C2678F7860003A012 /* Detected-in-Still-Image */ = {
 			isa = PBXGroup;
 			children = (
+				30874FA1267F2208009659B6 /* Model */,
 				308466B82678F7AE0003A012 /* Scene */,
 				3084668D2678F7860003A012 /* Detected_in_Still_ImageApp.swift */,
 				3084668F2678F7860003A012 /* ContentView.swift */,
@@ -142,6 +145,14 @@
 				308466BB267B98AA0003A012 /* DetectorViewModel.swift */,
 			);
 			path = Scene;
+			sourceTree = "<group>";
+		};
+		30874FA1267F2208009659B6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				30874FA2267F221D009659B6 /* VisionClient.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,6 +284,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30874FA3267F221D009659B6 /* VisionClient.swift in Sources */,
 				308466BC267B98AA0003A012 /* DetectorViewModel.swift in Sources */,
 				308466902678F7860003A012 /* ContentView.swift in Sources */,
 				3084668E2678F7860003A012 /* Detected_in_Still_ImageApp.swift in Sources */,
