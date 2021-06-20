@@ -235,8 +235,8 @@ final class DetectorViewModel: ObservableObject {
             var points: [CGPoint] = []
             print("open landmark: \(openLandmarkRegion.normalizedPoints)")
             for point in openLandmarkRegion.normalizedPoints {
-                let x = point.x * firstFaceBounds.origin.x + bounds.origin.x
-                let y = point.y * firstFaceBounds.origin.y + bounds.origin.y
+                let x = point.x * firstFaceBounds.width + firstFaceBounds.origin.x
+                let y = point.y * firstFaceBounds.height + firstFaceBounds.origin.y
                 let normalizePoint = CGPoint(x: x,
                                              y: y)
                 points.append(normalizePoint)
