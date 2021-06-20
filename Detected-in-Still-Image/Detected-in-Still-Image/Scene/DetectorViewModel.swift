@@ -209,7 +209,42 @@ final class DetectorViewModel: ObservableObject {
 
     fileprivate func drawFeatures(onFaces faces: [VNFaceObservation], onImageWithBounds bounds: CGRect) {
 
-        
+        guard let firstFace = faces.first else {
+            return
+        }
+
+        let firstFaceBounds = boundingBox(forRegionOfInterest: firstFace.boundingBox, withinImageBounds: bounds)
+        guard let landmarks = firstFace.landmarks else {
+            return
+        }
+
+        let openLandmarkRegions = [
+            landmarks.leftEyebrow,
+            landmarks.rightEyebrow,
+            landmarks.faceContour,
+            landmarks.noseCrest,
+            landmarks.medianLine
+        ].compactMap { $0 }
+
+        // openLandmarkRegionsを使ってPointを作成する
+        for openLandmarkRegion in openLandmarkRegions {
+            guard openLandmarkRegion.pointCount > 1 else {
+                return
+            }
+
+            var points: [CGPoint] = []
+            print("open landmark: \(openLandmarkRegion.normalizedPoints)")
+            for point in openLandmarkRegion.normalizedPoints {
+                let x = point.x * firstFaceBounds.origin.x + bounds.origin.x
+                let y = point.y * firstFaceBounds.origin.y + bounds.origin.y
+                let normalizePoint = CGPoint(x: x,
+                                             y: y)
+                points.append(normalizePoint)
+            }
+            detectedFaceLandmarkPoints.append(points)
+        }
+        return
+
 
         for faceObservation in faces {
             let faceBounds = boundingBox(forRegionOfInterest: faceObservation.boundingBox, withinImageBounds: bounds)
