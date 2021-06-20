@@ -15,7 +15,7 @@ final class DetectorViewModel: ObservableObject {
     @Published var image: UIImage = UIImage()
     @Published var imageViewFrame: CGRect = .zero
     @Published var detectedFrame: [CGRect] = []
-    @Published var detectedFaceLandmarkPoints: [CGPoint] = []
+    @Published var detectedFaceLandmarkPoints: [[CGPoint]] = []
     func onAppear(image: UIImage) {
         self.image = image
         let correctedImage = scaleAndOrient(image: image)
@@ -209,6 +209,8 @@ final class DetectorViewModel: ObservableObject {
 
     fileprivate func drawFeatures(onFaces faces: [VNFaceObservation], onImageWithBounds bounds: CGRect) {
 
+        
+
         for faceObservation in faces {
             let faceBounds = boundingBox(forRegionOfInterest: faceObservation.boundingBox, withinImageBounds: bounds)
             guard let landmarks = faceObservation.landmarks else {
@@ -217,7 +219,7 @@ final class DetectorViewModel: ObservableObject {
 
             let affineTransform = CGAffineTransform(scaleX: faceBounds.size.width, y: faceBounds.size.height)
 
-            landmarkAffineTransform = affineTransform
+            //landmarkAffineTransform = affineTransform
 
             // Treat eyebrows and lines as open-ended regions when drawing paths.
             let openLandmarkRegions = [
@@ -243,8 +245,16 @@ final class DetectorViewModel: ObservableObject {
                     return
                 }
 
+                var points: [CGPoint] = []
                 print("open landmark: \(openLandmarkRegion.normalizedPoints)")
-                detectedFaceLandmarkPoints = openLandmarkRegion.normalizedPoints
+                for point in openLandmarkRegion.normalizedPoints {
+                    let x = point.x * faceBounds.origin.x + bounds.origin.x
+                    let y = point.y * faceBounds.origin.y + bounds.origin.y
+                    let normalizePoint = CGPoint(x: x,
+                                                 y: y)
+                    points.append(normalizePoint)
+                }
+                detectedFaceLandmarkPoints.append(points)
             }
         }
     }
