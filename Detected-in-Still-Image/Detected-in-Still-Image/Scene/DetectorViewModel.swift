@@ -15,7 +15,7 @@ final class DetectorViewModel: ObservableObject {
     @Published var image: UIImage = UIImage()
     @Published var imageViewFrame: CGRect = .zero
     @Published var detectedFrame: [CGRect] = []
-    @Published var detectedFaceLandmarkPoints: [[CGPoint]] = []
+    @Published var detectedFaceLandmarkPoints: [[Bool: [CGPoint]]] = []
     func onAppear(image: UIImage) {
         self.image = image
         let correctedImage = scaleAndOrient(image: image)
@@ -208,56 +208,12 @@ final class DetectorViewModel: ObservableObject {
     }
 
     fileprivate func drawFeatures(onFaces faces: [VNFaceObservation], onImageWithBounds bounds: CGRect) {
-
-//        guard let firstFace = faces.first else {
-//            return
-//        }
-
         for face in faces {
             let firstFaceBounds = boundingBox(forRegionOfInterest: face.boundingBox, withinImageBounds: bounds)
             guard let landmarks = face.landmarks else {
                 return
             }
 
-            let openLandmarkRegions = [
-                landmarks.leftEyebrow,
-                landmarks.rightEyebrow,
-                landmarks.faceContour,
-                landmarks.noseCrest,
-                landmarks.medianLine
-            ].compactMap { $0 }
-
-            // openLandmarkRegionsを使ってPointを作成する
-            for openLandmarkRegion in openLandmarkRegions {
-                guard openLandmarkRegion.pointCount > 1 else {
-                    return
-                }
-
-                var points: [CGPoint] = []
-                print("open landmark: \(openLandmarkRegion.normalizedPoints)")
-                for point in openLandmarkRegion.normalizedPoints {
-                    let x = point.x * firstFaceBounds.width + firstFaceBounds.origin.x
-                    let y = point.y * firstFaceBounds.height + firstFaceBounds.origin.y
-                    let normalizePoint = CGPoint(x: x,
-                                                 y: y)
-                    points.append(normalizePoint)
-                }
-                detectedFaceLandmarkPoints.append(points)
-            }
-        }
-
-
-        return
-
-
-        for faceObservation in faces {
-            let faceBounds = boundingBox(forRegionOfInterest: faceObservation.boundingBox, withinImageBounds: bounds)
-            guard let landmarks = faceObservation.landmarks else {
-                continue
-            }
-
-            let affineTransform = CGAffineTransform(scaleX: faceBounds.size.width, y: faceBounds.size.height)
-            // Treat eyebrows and lines as open-ended regions when drawing paths.
             let openLandmarkRegions = [
                 landmarks.leftEyebrow,
                 landmarks.rightEyebrow,
@@ -284,15 +240,94 @@ final class DetectorViewModel: ObservableObject {
                 var points: [CGPoint] = []
                 print("open landmark: \(openLandmarkRegion.normalizedPoints)")
                 for point in openLandmarkRegion.normalizedPoints {
-                    let x = point.x * faceBounds.origin.x + bounds.origin.x
-                    let y = point.y * faceBounds.origin.y + bounds.origin.y
+                    let x = point.x * firstFaceBounds.width + firstFaceBounds.origin.x
+                    let y = point.y * firstFaceBounds.height + firstFaceBounds.origin.y
                     let normalizePoint = CGPoint(x: x,
                                                  y: y)
                     points.append(normalizePoint)
                 }
-                detectedFaceLandmarkPoints.append(points)
+                detectedFaceLandmarkPoints.append([false: points])
+            }
+
+            for closedLandmarksRegion in closedLandmarkRegions {
+                guard closedLandmarksRegion.pointCount > 1 else {
+                    return
+                }
+                var points: [CGPoint] = []
+                print("closed landmark: \(closedLandmarksRegion.normalizedPoints)")
+                for point in closedLandmarksRegion.normalizedPoints {
+                    let x = point.x * firstFaceBounds.width + firstFaceBounds.origin.x
+                    let y = point.y * firstFaceBounds.height + firstFaceBounds.origin.y
+                    let normalizePoint = CGPoint(x: x,
+                                                 y: y)
+                    points.append(normalizePoint)
+                }
+                detectedFaceLandmarkPoints.append([true: points])
             }
         }
+
+
+        return
+
+
+//        for faceObservation in faces {
+//            let faceBounds = boundingBox(forRegionOfInterest: faceObservation.boundingBox, withinImageBounds: bounds)
+//            guard let landmarks = faceObservation.landmarks else {
+//                continue
+//            }
+//
+//            // Treat eyebrows and lines as open-ended regions when drawing paths.
+//            let openLandmarkRegions = [
+//                landmarks.leftEyebrow,
+//                landmarks.rightEyebrow,
+//                landmarks.faceContour,
+//                landmarks.noseCrest,
+//                landmarks.medianLine
+//            ].compactMap { $0 }
+//
+//            // Draw eyes, lips, and nose as closed regions.
+//            let closedLandmarkRegions = [
+//                landmarks.leftEye,
+//                landmarks.rightEye,
+//                landmarks.outerLips,
+//                landmarks.innerLips,
+//                landmarks.nose
+//                ].compactMap { $0 } // Filter out missing regions.
+//
+//            // openLandmarkRegionsを使ってPointを作成する
+//            for openLandmarkRegion in openLandmarkRegions {
+//                guard openLandmarkRegion.pointCount > 1 else {
+//                    return
+//                }
+//
+//                var points: [CGPoint] = []
+//                print("open landmark: \(openLandmarkRegion.normalizedPoints)")
+//                for point in openLandmarkRegion.normalizedPoints {
+//                    let x = point.x * faceBounds.origin.x + bounds.origin.x
+//                    let y = point.y * faceBounds.origin.y + bounds.origin.y
+//                    let normalizePoint = CGPoint(x: x,
+//                                                 y: y)
+//                    points.append(normalizePoint)
+//                }
+//                detectedFaceLandmarkPoints.append(points)
+//            }
+//
+//            for closedLandmarksRegion in closedLandmarkRegions {
+//                guard closedLandmarksRegion.pointCount > 1 else {
+//                    return
+//                }
+//                var points: [CGPoint] = []
+//                print("open landmark: \(closedLandmarksRegion.normalizedPoints)")
+//                for point in closedLandmarksRegion.normalizedPoints {
+//                    let x = point.x * faceBounds.origin.x + bounds.origin.x
+//                    let y = point.y * faceBounds.origin.y + bounds.origin.y
+//                    let normalizePoint = CGPoint(x: x,
+//                                                 y: y)
+//                    points.append(normalizePoint)
+//                }
+//                detectedFaceLandmarkPoints.append(points)
+//            }
+
     }
 
     @Published var landmarkAffineTransform: CGAffineTransform = .identity

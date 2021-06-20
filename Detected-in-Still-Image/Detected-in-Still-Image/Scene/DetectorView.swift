@@ -34,15 +34,16 @@ public struct DetectorView<Content>: View where Content: View {
                 )
                 .overlay(
                     Path { path in
-                        for points in viewModel.detectedFaceLandmarkPoints {
-                            path.addLines(points)
+                        for element in viewModel.detectedFaceLandmarkPoints {
+                            for (closed, points) in element {
+                                path.addLines(points)
+                                if closed {
+                                    path.closeSubpath()
+                                }
+                            }
                         }
-
-                        path.closeSubpath()
                     }
-                    //.applying(viewModel.landmarkAffineTransform)
-                    //.transform(viewModel.landmarkAffineTransform)
-                    .stroke(Color.black, lineWidth: 2)
+                    .stroke(Color.black, lineWidth: 1)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
             builder()
