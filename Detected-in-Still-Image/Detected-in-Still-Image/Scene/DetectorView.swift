@@ -52,22 +52,6 @@ public struct DetectorView<Content>: View where Content: View {
             viewModel.onAppear(image: image)
         }
     }
-
-    func useProxy(_ proxy: GeometryProxy) -> some View {
-        viewModel.updateImageViewFrame(with: proxy.frame(in: .global))
-        return Group {
-            Image(uiImage: viewModel.image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .border(Color.red, width: 1)
-            VStack {
-                Text("global: \(proxy.frame(in: .global).debugDescription)")
-                    .foregroundColor(.white)
-                    .font(.title)
-            }
-            builder()
-        }
-    }
 }
 
 struct DetectorView_Previews: PreviewProvider {

@@ -49,7 +49,7 @@ final class VisionClient: ObservableObject {
 
     /// ensure in main thread when you use the value
     @Published var result: VisionRequestTypes = .unknown
-    @Published var error: Error?
+    @Published var error: VisionError?
 
     func configure(type: VisionRequestTypes.Set, imageViewFrame: CGRect) {
         self.requestTypes = type
@@ -57,9 +57,10 @@ final class VisionClient: ObservableObject {
     }
 
     func performVisionRequest(image: CGImage,
-                              orientation: CGImagePropertyOrientation) throws {
+                              orientation: CGImagePropertyOrientation) {
         guard !requestTypes.isEmpty else {
-            throw VisionError.typeNotSet
+            error = VisionError.typeNotSet
+            return 
         }
         let imageRequestHandler = VNImageRequestHandler(cgImage: image,
                                                         orientation: orientation,
@@ -76,7 +77,7 @@ final class VisionClient: ObservableObject {
         do {
             try imageRequestHandler.perform(requests)
         } catch {
-            throw VisionError.visionError(error: error)
+            self.error = VisionError.visionError(error: error)
         }
     }
 
@@ -85,7 +86,7 @@ final class VisionClient: ObservableObject {
         guard let self = self else { return }
         if let error = error {
             print(error.localizedDescription)
-            self.error = error
+            self.error = VisionError.visionError(error: error)
             return
         }
 
