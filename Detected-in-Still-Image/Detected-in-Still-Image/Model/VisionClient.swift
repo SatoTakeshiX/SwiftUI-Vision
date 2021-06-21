@@ -9,8 +9,9 @@ import Foundation
 import Vision
 
 enum VisionRequestTypes {
-    case faceRect
-    case faceLandmarks
+    case unknown
+    case faceRect(rectBox: CGRect)
+    case faceLandmarks(observation: [VNFaceObservation])
     case text
     case barcode
     case rect
@@ -38,8 +39,63 @@ enum VisionRequestTypes {
 
 final class VisionClient: ObservableObject {
 
-    @Published var requestTypes: VisionRequestTypes.Set
-    init(requests: VisionRequestTypes.Set) {
+    private var requestTypes: VisionRequestTypes.Set = []
+    private var imageViewFrame: CGRect = .zero
+
+    /// ensure in main thread when you use the value
+    @Published var result: VisionRequestTypes = .unknown
+
+    func configure(_ requests: VisionRequestTypes.Set, imageViewFrame: CGRect) {
         self.requestTypes = requests
+        self.imageViewFrame = imageViewFrame
+    }
+
+    // MARK: Vision Requests
+    lazy var faceDetectionRequest = VNDetectFaceRectanglesRequest(completionHandler: { request, error in
+        if let error = error {
+            print(error.localizedDescription)
+            return
+        }
+
+        guard let results = request.results as? [VNFaceObservation] else {
+            return
+        }
+
+
+    })
+
+    lazy var faceLandmarkRequest = VNDetectFaceLandmarksRequest(completionHandler: { request, error in
+        if let error = error {
+            print(error.localizedDescription)
+            return
+        }
+
+        guard let results = request.results as? [VNFaceObservation] else {
+            return
+        }
+        // need to use in main thread
+        self.result = .faceLandmarks(observation: results)
+    })
+
+    func boundingBox(forRegionOfInterest: CGRect,
+                     withinImageBounds bounds: CGRect) -> CGRect {
+
+        let imageWidth = bounds.width
+        let imageHeight = bounds.height
+
+        // Begin with input rect.
+        var rect = forRegionOfInterest
+
+        // Reposition origin.
+        rect.origin.x *= imageWidth
+        rect.origin.x += bounds.origin.x
+        //
+        rect.origin.y = (rect.origin.y) * imageHeight + bounds.origin.y
+
+        // Rescale normalized coordinates.
+        rect.size.width *= imageWidth
+        rect.size.height *= imageHeight
+
+        return rect
     }
 }
