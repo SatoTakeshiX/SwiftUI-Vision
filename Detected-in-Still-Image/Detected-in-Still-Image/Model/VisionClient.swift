@@ -39,6 +39,11 @@ enum VisionRequestTypes {
 
 final class VisionClient: ObservableObject {
 
+    enum VisionError: Error {
+        case typeNotSet
+        case visionError(error: Error)
+    }
+
     private var requestTypes: VisionRequestTypes.Set = []
     private var imageViewFrame: CGRect = .zero
 
@@ -46,9 +51,33 @@ final class VisionClient: ObservableObject {
     @Published var result: VisionRequestTypes = .unknown
     @Published var error: Error?
 
-    func request(type: VisionRequestTypes.Set, imageViewFrame: CGRect) {
+    func configure(type: VisionRequestTypes.Set, imageViewFrame: CGRect) {
         self.requestTypes = type
         self.imageViewFrame = imageViewFrame
+    }
+
+    func performVisionRequest(image: CGImage,
+                              orientation: CGImagePropertyOrientation) throws {
+        guard !requestTypes.isEmpty else {
+            throw VisionError.typeNotSet
+        }
+        let imageRequestHandler = VNImageRequestHandler(cgImage: image,
+                                                        orientation: orientation,
+                                                        options: [:])
+        var requests: [VNRequest] = []
+        if requestTypes.contains(.faceRect) {
+            requests.append(faceDetectionRequest)
+        }
+
+        if requestTypes.contains(.faceLandmarks) {
+            requests.append(faceLandmarkRequest)
+        }
+
+        do {
+            try imageRequestHandler.perform(requests)
+        } catch {
+            throw VisionError.visionError(error: error)
+        }
     }
 
     // MARK: Vision Requests
