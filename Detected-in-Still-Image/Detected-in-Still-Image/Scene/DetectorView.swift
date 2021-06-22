@@ -9,12 +9,14 @@ import SwiftUI
 
 public struct DetectorView<Content>: View where Content: View {
     let image: UIImage
+    let detectType: VisionRequestTypes.Set
     let builder: () -> Content
     @StateObject var viewModel = DetectorViewModel()
 
-    init(image: UIImage, @ViewBuilder builder: @escaping () -> Content) {
+    init(image: UIImage, requestType: VisionRequestTypes.Set, @ViewBuilder builder: @escaping () -> Content) {
         self.builder = builder
         self.image = image
+        self.detectType = requestType
     }
 
     public var body: some View {
@@ -49,7 +51,7 @@ public struct DetectorView<Content>: View where Content: View {
             builder()
         }
         .onAppear {
-            viewModel.onAppear(image: image)
+            viewModel.onAppear(image: image, detectType: detectType)
         }
     }
 }
@@ -57,7 +59,7 @@ public struct DetectorView<Content>: View where Content: View {
 struct DetectorView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            DetectorView(image: UIImage(named: "people")!) {
+            DetectorView(image: UIImage(named: "people")!, requestType: [.all]) {
                 Text("ssss")
                     .foregroundColor(.blue)
                     .border(Color.green, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)

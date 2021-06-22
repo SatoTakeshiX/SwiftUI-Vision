@@ -9,16 +9,35 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            DetectorView(image: UIImage(named: "people")!) {
-//                Text("ssss")
-//                    .foregroundColor(.blue)
-//                    .border(Color.green, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            Form {
+                List {
+                    NavigationLink("Face Rect", destination: DetectorView(image: UIImage(named: "people")!, requestType: [.faceRect]) {
+
+                    })
+                }
+                List {
+                    NavigationLink("Face Landmarks", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.faceLandmarks]) {
+
+                    })
+                }
+                List {
+                    NavigationLink("Text", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.text]) {
+
+                    })
+                }
+                List {
+                    NavigationLink("barcode", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]) {
+
+                    })
+                }
+                List {
+                    NavigationLink("Rect", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]) {
+
+                    })
+                }
             }
-            List {
-                Text("sss")
-                Text("ddd")
-            }
+            .navigationTitle("Still Image Detector")
         }
     }
 }

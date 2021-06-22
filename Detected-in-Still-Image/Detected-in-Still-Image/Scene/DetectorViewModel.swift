@@ -43,7 +43,7 @@ final class DetectorViewModel: ObservableObject {
             .store(in: &errorCancellables)
     }
 
-    func onAppear(image: UIImage) {
+    func onAppear(image: UIImage, detectType: VisionRequestTypes.Set) {
         self.image = image
         let correctedImage = scaleAndOrient(image: image)
         print(correctedImage.description) // "<UIImage:0x600003e0c240 anonymous {640, 394}>"
@@ -59,16 +59,12 @@ final class DetectorViewModel: ObservableObject {
         let rate = fullImageWidth / UIScreen.main.bounds.width
         let imageFrame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: fullImageHeight / rate)
 
-        visionClient.configure(type: [.faceRect, .faceLandmarks], imageViewFrame: imageFrame)
+        visionClient.configure(type: detectType, imageViewFrame: imageFrame)
 
         print(cgImage)
         let cgOrientation = CGImagePropertyOrientation(image.imageOrientation)
 
-        do {
-            try visionClient.performVisionRequest(image: cgImage, orientation: cgOrientation)
-        } catch {
-            print(error.localizedDescription)
-        }
+        visionClient.performVisionRequest(image: cgImage, orientation: cgOrientation)
     }
 
     private func scaleAndOrient(image: UIImage) -> UIImage {
