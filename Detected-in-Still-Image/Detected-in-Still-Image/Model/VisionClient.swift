@@ -12,7 +12,8 @@ enum VisionRequestTypes {
     case unknown
     case faceRect(rectBox: [CGRect])
     case faceLandmarks(drawPoints: [[Bool: [CGPoint]]])
-    case text
+    case word(rectBox: [CGRect])
+    case character(rectBox: [CGRect])
     case barcode
     case rect
 
@@ -106,6 +107,7 @@ final class VisionClient: ObservableObject {
         guard let self = self else { return }
         if let error = error {
             print(error.localizedDescription)
+            self.error = VisionError.visionError(error: error)
             return
         }
 
@@ -115,6 +117,34 @@ final class VisionClient: ObservableObject {
         let points = self.makeFaceFeaturesPoints(onFaces: results, onImageWithBounds: self.imageViewFrame)
         self.result = .faceLandmarks(drawPoints: points)
     })
+
+    lazy var textDetectionRequest: VNDetectTextRectanglesRequest = {
+        let textDetectRequest = VNDetectTextRectanglesRequest(completionHandler: { [weak self] request, error in
+            guard let self = self else { return }
+            if let error = error {
+                print(error.localizedDescription)
+                self.error = VisionError.visionError(error: error)
+                return
+            }
+
+            guard let results = request.results as? [VNTextObservation] else {
+                return
+            }
+
+            let wordBoxs = results.map { observation -> CGRect in
+                let rectBox = self.boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: self.imageViewFrame)
+                print("detected Rect: \(rectBox.debugDescription)")
+                return rectBox
+            }
+            self.result = .word(rectBox: wordBoxs)
+
+            let charRects = self.makeTextRect(textObservations: results, onImageWithBounds: self.imageViewFrame)
+            self.result = .character(rectBox: charRects)
+        })
+        // Tell Vision to report bounding box around each character.
+        textDetectRequest.reportCharacterBoxes = true
+        return textDetectRequest
+    }()
 
     func boundingBox(forRegionOfInterest: CGRect,
                      withinImageBounds bounds: CGRect) -> CGRect {
@@ -184,6 +214,19 @@ final class VisionClient: ObservableObject {
         }
 
         return landmarkPoints
+    }
+
+    private func makeTextRect(textObservations: [VNTextObservation], onImageWithBounds bounds: CGRect) -> [CGRect] {
+        let charBoxRects = textObservations.compactMap { observation -> [CGRect]? in
+            guard let charBoxes = observation.characterBoxes else {
+                return nil
+            }
+
+            return charBoxes.compactMap { charObservation in
+                self.boundingBox(forRegionOfInterest: charObservation.boundingBox, withinImageBounds: bounds)
+            }
+        }
+        return charBoxRects.flatMap { $0 }
     }
 
     private func makeNormalizedPoints(region: VNFaceLandmarkRegion2D, faceBounds: CGRect) -> [CGPoint]? {

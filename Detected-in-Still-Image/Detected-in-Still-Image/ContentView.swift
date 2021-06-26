@@ -27,12 +27,22 @@ struct ContentView: View {
                     })
                 }
                 List {
+                    NavigationLink("Text Recognize", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]) {
+
+                    })
+                }
+                List {
                     NavigationLink("barcode", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]) {
 
                     })
                 }
                 List {
                     NavigationLink("Rect", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]) {
+
+                    })
+                }
+                List {
+                    NavigationLink("Hand Pose", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]) {
 
                     })
                 }

@@ -24,7 +24,7 @@ public struct DetectorView<Content>: View where Content: View {
             Image(uiImage: viewModel.image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .border(Color.red, width: 1)
+                .opacity(0.6)
                 .overlay(
                     Path { path in
                         for frame in viewModel.detectedFrame {
@@ -45,9 +45,10 @@ public struct DetectorView<Content>: View where Content: View {
                             }
                         }
                     }
-                    .stroke(Color.black, lineWidth: 1)
+                    .stroke(Color.blue, lineWidth: 1)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
+                // for words
             builder()
         }
         .onAppear {
