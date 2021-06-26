@@ -12,39 +12,25 @@ struct ContentView: View {
         NavigationView {
             Form {
                 List {
-                    NavigationLink("Face Rect", destination: DetectorView(image: UIImage(named: "people")!, requestType: [.faceRect]) {
-
-                    })
+                    NavigationLink("Face Rect", destination: DetectorView(image: UIImage(named: "people")!, requestType: [.faceRect]))
                 }
                 List {
-                    NavigationLink("Face Landmarks", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.faceLandmarks]) {
-
-                    })
+                    NavigationLink("Face Landmarks", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.faceLandmarks]))
                 }
                 List {
-                    NavigationLink("Text", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.text]) {
-
-                    })
+                    NavigationLink("Text", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.text]))
                 }
                 List {
-                    NavigationLink("Text Recognize", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]) {
-
-                    })
+                    NavigationLink("Text Recognize", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]))
                 }
                 List {
-                    NavigationLink("barcode", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]) {
-
-                    })
+                    NavigationLink("barcode", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]))
                 }
                 List {
-                    NavigationLink("Rect", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]) {
-
-                    })
+                    NavigationLink("Rect", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]))
                 }
                 List {
-                    NavigationLink("Hand Pose", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]) {
-
-                    })
+                    NavigationLink("Hand Pose", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]))
                 }
             }
             .navigationTitle("Still Image Detector")

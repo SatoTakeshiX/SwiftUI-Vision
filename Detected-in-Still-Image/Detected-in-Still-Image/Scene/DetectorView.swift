@@ -7,20 +7,18 @@
 
 import SwiftUI
 
-public struct DetectorView<Content>: View where Content: View {
+public struct DetectorView: View {
     let image: UIImage
     let detectType: VisionRequestTypes.Set
-    let builder: () -> Content
     @StateObject var viewModel = DetectorViewModel()
 
-    init(image: UIImage, requestType: VisionRequestTypes.Set, @ViewBuilder builder: @escaping () -> Content) {
-        self.builder = builder
+    init(image: UIImage, requestType: VisionRequestTypes.Set) {
         self.image = image
         self.detectType = requestType
     }
 
     public var body: some View {
-        ZStack {
+        VStack {
             Image(uiImage: viewModel.image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -48,8 +46,7 @@ public struct DetectorView<Content>: View where Content: View {
                     .stroke(Color.blue, lineWidth: 1)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
-                // for words
-            builder()
+            DetectedInfomationView(info: viewModel.detectedInfo)
         }
         .onAppear {
             viewModel.onAppear(image: image, detectType: detectType)
@@ -57,19 +54,30 @@ public struct DetectorView<Content>: View where Content: View {
     }
 }
 
+struct DetectedInfomationView: View {
+    let info: [[String: String]]
+
+    var body: some View {
+        List {
+            ForEach(info.indices, id: \.self) { index in
+                Section(header: Text("index \(index)")) {
+                    ForEach(Array(info[index].keys), id: \.self) { key in
+                        HStack {
+                            Text("\(key)")
+                            Spacer()
+                            Text("\(info[index][key] ?? "")")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 struct DetectorView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            DetectorView(image: UIImage(named: "people")!, requestType: [.all]) {
-                Text("ssss")
-                    .foregroundColor(.blue)
-                    .border(Color.green, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
-            }
-            List {
-                Text("sss")
-                Text("ddd")
-            }
+            DetectorView(image: UIImage(named: "people")!, requestType: [.all])
         }
-
     }
 }

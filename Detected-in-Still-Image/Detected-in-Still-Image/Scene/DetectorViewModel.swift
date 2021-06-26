@@ -16,6 +16,7 @@ final class DetectorViewModel: ObservableObject {
     @Published var image: UIImage = UIImage()
     @Published var detectedFrame: [CGRect] = []
     @Published var detectedFaceLandmarkPoints: [[Bool: [CGPoint]]] = []
+    @Published var detectedInfo: [[String: String]] = []
     private var cancellables: Set<AnyCancellable> = []
     private var errorCancellables: Set<AnyCancellable> = []
     let visionClient = VisionClient()
@@ -25,10 +26,12 @@ final class DetectorViewModel: ObservableObject {
             .receive(on: RunLoop.main)
             .sink { type in
                 switch type {
-                    case .faceLandmarks(let drawPoints):
+                    case .faceLandmarks(let drawPoints, let info):
                         self.detectedFaceLandmarkPoints = drawPoints
-                    case .faceRect(let rectBox):
+                        self.detectedInfo.append(contentsOf: info)
+                    case .faceRect(let rectBox, let info):
                         self.detectedFrame = rectBox
+                        self.detectedInfo.append(contentsOf: info)
                     case .word(let rectBoxes):
                         self.detectedFrame = rectBoxes
                     default:
@@ -66,6 +69,8 @@ final class DetectorViewModel: ObservableObject {
         print(cgImage)
         let cgOrientation = CGImagePropertyOrientation(image.imageOrientation)
 
+        // clear info
+        detectedInfo.removeAll()
         visionClient.performVisionRequest(image: cgImage, orientation: cgOrientation)
     }
 

@@ -10,8 +10,8 @@ import Vision
 
 enum VisionRequestTypes {
     case unknown
-    case faceRect(rectBox: [CGRect])
-    case faceLandmarks(drawPoints: [[Bool: [CGPoint]]])
+    case faceRect(rectBox: [CGRect], info: [[String: String]])
+    case faceLandmarks(drawPoints: [[Bool: [CGPoint]]], info: [[String: String]])
     case word(rectBox: [CGRect])
     case character(rectBox: [CGRect])
     case barcode
@@ -100,7 +100,16 @@ final class VisionClient: ObservableObject {
             print("detected Rect: \(rectBox.debugDescription)")
             return rectBox
         }
-        self.result = .faceRect(rectBox: rectBoxs)
+
+        var info = results.map { obsevation -> [String: String] in
+            var info: [String: String] = [:]
+            info["faceCaptureQuality"] = "\(obsevation.faceCaptureQuality ?? 0)"
+            info["roll"] = "\(obsevation.roll?.doubleValue ?? 0)"
+            info["yaw"] = "\(obsevation.yaw?.doubleValue ?? 0)"
+            return info
+        }
+        info.append(["face count": "\(results.count)"])
+        self.result = .faceRect(rectBox: rectBoxs, info: info)
     })
 
     lazy var faceLandmarkRequest = VNDetectFaceLandmarksRequest(completionHandler: { [weak self] request, error in
@@ -115,7 +124,15 @@ final class VisionClient: ObservableObject {
             return
         }
         let points = self.makeFaceFeaturesPoints(onFaces: results, onImageWithBounds: self.imageViewFrame)
-        self.result = .faceLandmarks(drawPoints: points)
+        var info = results.map { obsevation -> [String: String] in
+            var info: [String: String] = [:]
+            info["faceCaptureQuality"] = "\(obsevation.faceCaptureQuality ?? 0)"
+            info["roll"] = "\(obsevation.roll?.doubleValue ?? 0)"
+            info["yaw"] = "\(obsevation.yaw?.doubleValue ?? 0)"
+            return info
+        }
+        info.append(["face count": "\(results.count)"])
+        self.result = .faceLandmarks(drawPoints: points, info: info)
     })
 
     lazy var textDetectionRequest: VNDetectTextRectanglesRequest = {
