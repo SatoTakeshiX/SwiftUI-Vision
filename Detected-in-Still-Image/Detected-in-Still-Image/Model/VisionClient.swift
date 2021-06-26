@@ -12,8 +12,8 @@ enum VisionRequestTypes {
     case unknown
     case faceRect(rectBox: [CGRect], info: [[String: String]])
     case faceLandmarks(drawPoints: [[Bool: [CGPoint]]], info: [[String: String]])
-    case word(rectBox: [CGRect])
-    case character(rectBox: [CGRect])
+    case word(rectBox: [CGRect], info: [[String: String]])
+    case character(rectBox: [CGRect], info: [[String: String]])
     case barcode
     case rect
 
@@ -27,8 +27,9 @@ enum VisionRequestTypes {
         static let faceRect         = Set(rawValue: 1 << 0)
         static let faceLandmarks    = Set(rawValue: 1 << 1)
         static let text             = Set(rawValue: 1 << 2)
-        static let barcode          = Set(rawValue: 1 << 3)
-        static let rect             = Set(rawValue: 1 << 4)
+        static let textRecognize    = Set(rawValue: 1 << 3)
+        static let barcode          = Set(rawValue: 1 << 4)
+        static let rect             = Set(rawValue: 1 << 5)
 
         static let all: Set         = [.faceRect,
                                        .faceLandmarks,
@@ -66,6 +67,16 @@ final class VisionClient: ObservableObject {
         let imageRequestHandler = VNImageRequestHandler(cgImage: image,
                                                         orientation: orientation,
                                                         options: [:])
+
+        let requests = makeImageRequests()
+        do {
+            try imageRequestHandler.perform(requests)
+        } catch {
+            self.error = VisionError.visionError(error: error)
+        }
+    }
+
+    private func makeImageRequests() -> [VNRequest] {
         var requests: [VNRequest] = []
         if requestTypes.contains(.faceRect) {
             requests.append(faceDetectionRequest)
@@ -75,11 +86,10 @@ final class VisionClient: ObservableObject {
             requests.append(faceLandmarkRequest)
         }
 
-        do {
-            try imageRequestHandler.perform(requests)
-        } catch {
-            self.error = VisionError.visionError(error: error)
+        if requestTypes.contains(.text) {
+            requests.append(textDetectionRequest)
         }
+        return requests
     }
 
     // MARK: Vision Requests
@@ -103,7 +113,6 @@ final class VisionClient: ObservableObject {
 
         var info = results.map { obsevation -> [String: String] in
             var info: [String: String] = [:]
-            info["faceCaptureQuality"] = "\(obsevation.faceCaptureQuality ?? 0)"
             info["roll"] = "\(obsevation.roll?.doubleValue ?? 0)"
             info["yaw"] = "\(obsevation.yaw?.doubleValue ?? 0)"
             return info
@@ -126,7 +135,6 @@ final class VisionClient: ObservableObject {
         let points = self.makeFaceFeaturesPoints(onFaces: results, onImageWithBounds: self.imageViewFrame)
         var info = results.map { obsevation -> [String: String] in
             var info: [String: String] = [:]
-            info["faceCaptureQuality"] = "\(obsevation.faceCaptureQuality ?? 0)"
             info["roll"] = "\(obsevation.roll?.doubleValue ?? 0)"
             info["yaw"] = "\(obsevation.yaw?.doubleValue ?? 0)"
             return info
@@ -153,10 +161,12 @@ final class VisionClient: ObservableObject {
                 print("detected Rect: \(rectBox.debugDescription)")
                 return rectBox
             }
-            self.result = .word(rectBox: wordBoxs)
+            let wordInfo = ["wordBoxes count": "\(results.count)"]
+            self.result = .word(rectBox: wordBoxs, info: [wordInfo])
 
             let charRects = self.makeTextRect(textObservations: results, onImageWithBounds: self.imageViewFrame)
-            self.result = .character(rectBox: charRects)
+            let charInfo = ["char count": "\(charRects.count)"]
+            self.result = .character(rectBox: charRects, info: [charInfo])
         })
         // Tell Vision to report bounding box around each character.
         textDetectRequest.reportCharacterBoxes = true
@@ -233,6 +243,7 @@ final class VisionClient: ObservableObject {
         return landmarkPoints
     }
 
+    // MARK: - Text Detection
     private func makeTextRect(textObservations: [VNTextObservation], onImageWithBounds bounds: CGRect) -> [CGRect] {
         let charBoxRects = textObservations.compactMap { observation -> [CGRect]? in
             guard let charBoxes = observation.characterBoxes else {

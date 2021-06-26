@@ -32,8 +32,12 @@ final class DetectorViewModel: ObservableObject {
                     case .faceRect(let rectBox, let info):
                         self.detectedFrame = rectBox
                         self.detectedInfo.append(contentsOf: info)
-                    case .word(let rectBoxes):
-                        self.detectedFrame = rectBoxes
+                    case .word(let rectBoxes, let info):
+                        self.detectedFrame.append(contentsOf: rectBoxes)
+                        self.detectedInfo.append(contentsOf: info)
+                    case .character(let rectBox, let info):
+                        self.detectedFrame.append(contentsOf: rectBox)
+                        self.detectedInfo.append(contentsOf: info)
                     default:
                         break
                 }
