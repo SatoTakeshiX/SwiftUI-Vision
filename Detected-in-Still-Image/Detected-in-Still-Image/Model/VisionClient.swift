@@ -15,7 +15,7 @@ enum VisionRequestTypes {
     case word(rectBox: [CGRect], info: [[String: String]])
     case character(rectBox: [CGRect], info: [[String: String]])
     case textRecognize(info: [[String: String]])
-    case barcode
+    case barcode(rectBox: [CGRect], info: [[String: String]])
     case rect
 
     struct Set: OptionSet {
@@ -95,6 +95,10 @@ final class VisionClient: ObservableObject {
             requests.append(textRecognizeRequest)
         }
 
+        if requestTypes.contains(.barcode) {
+            requests.append(barcodeDetectionRequest)
+        }
+
         return requests
     }
 
@@ -111,7 +115,7 @@ final class VisionClient: ObservableObject {
             return
         }
 
-        let rectBoxs = results.map { observation -> CGRect in
+        let rectBoxes = results.map { observation -> CGRect in
             let rectBox = self.boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: self.imageViewFrame)
             print("detected Rect: \(rectBox.debugDescription)")
             return rectBox
@@ -124,7 +128,7 @@ final class VisionClient: ObservableObject {
             return info
         }
         info.append(["face count": "\(results.count)"])
-        self.result = .faceRect(rectBox: rectBoxs, info: info)
+        self.result = .faceRect(rectBox: rectBoxes, info: info)
     })
 
     lazy var faceLandmarkRequest = VNDetectFaceLandmarksRequest(completionHandler: { [weak self] request, error in
@@ -210,7 +214,40 @@ final class VisionClient: ObservableObject {
         return textRecognizeRequest
     }()
 
-    func boundingBox(forRegionOfInterest: CGRect,
+    lazy var barcodeDetectionRequest: VNDetectBarcodesRequest = {
+        let barcodeRequest = VNDetectBarcodesRequest(completionHandler: { [weak self] request, error in
+            guard let self = self else { return }
+            if let error = error {
+                print(error.localizedDescription)
+                self.error = VisionError.visionError(error: error)
+                return
+            }
+
+            guard let results = request.results as? [VNBarcodeObservation] else {
+                return
+            }
+
+            let rectBoxes = results.map { observation -> CGRect in
+                let rectBox = self.boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: self.imageViewFrame)
+                print("detected Rect: \(rectBox.debugDescription)")
+                return rectBox
+            }
+
+            let info = results.map { obsevation -> [String: String] in
+                var detectedInfo: [String: String] = [:]
+                detectedInfo["symbology"] = obsevation.symbology.rawValue
+                detectedInfo["value"] = obsevation.payloadStringValue ?? ""
+                return detectedInfo
+            }
+            self.result = .barcode(rectBox: rectBoxes, info: info)
+        })
+        barcodeRequest.symbologies = [.QR]
+        return barcodeRequest
+
+    }()
+
+    // MARK: - Private
+    private func boundingBox(forRegionOfInterest: CGRect,
                      withinImageBounds bounds: CGRect) -> CGRect {
 
         let imageWidth = bounds.width

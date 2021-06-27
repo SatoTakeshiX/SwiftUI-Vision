@@ -40,6 +40,9 @@ final class DetectorViewModel: ObservableObject {
                         self.detectedInfo.append(contentsOf: info)
                     case .textRecognize(let info):
                         self.detectedInfo.append(contentsOf: info)
+                    case .barcode(let rectBoxes, let info):
+                        self.detectedFrame.append(contentsOf: rectBoxes)
+                        self.detectedInfo.append(contentsOf: info)
                     default:
                         break
                 }
