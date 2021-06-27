@@ -16,7 +16,7 @@ enum VisionRequestTypes {
     case character(rectBox: [CGRect], info: [[String: String]])
     case textRecognize(info: [[String: String]])
     case barcode(rectBox: [CGRect], info: [[String: String]])
-    case rect
+    case rect(rectBox: [CGRect], info: [[String: String]])
 
     struct Set: OptionSet {
         typealias Element = VisionRequestTypes.Set
@@ -99,6 +99,10 @@ final class VisionClient: ObservableObject {
             requests.append(barcodeDetectionRequest)
         }
 
+        if requestTypes.contains(.rect) {
+            requests.append(rectDetectionRequest)
+        }
+
         return requests
     }
 
@@ -166,13 +170,13 @@ final class VisionClient: ObservableObject {
                 return
             }
 
-            let wordBoxs = results.map { observation -> CGRect in
+            let wordBoxes = results.map { observation -> CGRect in
                 let rectBox = self.boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: self.imageViewFrame)
                 print("detected Rect: \(rectBox.debugDescription)")
                 return rectBox
             }
             let wordInfo = ["wordBoxes count": "\(results.count)"]
-            self.result = .word(rectBox: wordBoxs, info: [wordInfo])
+            self.result = .word(rectBox: wordBoxes, info: [wordInfo])
 
             let charRects = self.makeTextRect(textObservations: results, onImageWithBounds: self.imageViewFrame)
             let charInfo = ["char count": "\(charRects.count)"]
@@ -244,6 +248,32 @@ final class VisionClient: ObservableObject {
         barcodeRequest.symbologies = [.QR]
         return barcodeRequest
 
+    }()
+
+    lazy var rectDetectionRequest: VNDetectRectanglesRequest = {
+        let rectDetectRequest = VNDetectRectanglesRequest { [weak self] request, error in
+            guard let self = self else { return }
+            if let error = error {
+                print(error.localizedDescription)
+                self.error = VisionError.visionError(error: error)
+                return
+            }
+
+            guard let results = request.results as? [VNRectangleObservation] else {
+                return
+            }
+
+            let rectBoxes = results.map { observation -> CGRect in
+                let rectBox = self.boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: self.imageViewFrame)
+                print("detected Rec: \(rectBox.debugDescription)")
+                return rectBox
+            }
+
+            let info = ["detected count": "\(results.count)"]
+            self.result = .rect(rectBox: rectBoxes, info: [info])
+        }
+
+        return rectDetectRequest
     }()
 
     // MARK: - Private

@@ -27,7 +27,7 @@ struct ContentView: View {
                     NavigationLink("barcode", destination: DetectorView(image: UIImage(named: "qr_code")!, requestType: [.barcode]))
                 }
                 List {
-                    NavigationLink("Rect", destination: DetectorView(image: UIImage(named: "book_keyboard")!, requestType: [.rect]))
+                    NavigationLink("Rect", destination: DetectorView(image: UIImage(named: "credit_card")!, requestType: [.rect]))
                 }
             }
             .navigationTitle("Still Image Detector")

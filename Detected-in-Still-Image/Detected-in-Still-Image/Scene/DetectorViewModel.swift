@@ -43,6 +43,9 @@ final class DetectorViewModel: ObservableObject {
                     case .barcode(let rectBoxes, let info):
                         self.detectedFrame.append(contentsOf: rectBoxes)
                         self.detectedInfo.append(contentsOf: info)
+                    case .rect(let rectBoxes, let info):
+                        self.detectedFrame.append(contentsOf: rectBoxes)
+                        self.detectedInfo.append(contentsOf: info)
                     default:
                         break
                 }
