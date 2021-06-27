@@ -18,19 +18,16 @@ struct ContentView: View {
                     NavigationLink("Face Landmarks", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.faceLandmarks]))
                 }
                 List {
-                    NavigationLink("Text", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.text]))
+                    NavigationLink("Text", destination: DetectorView(image: UIImage(named: "swiftui_recipe")!, requestType: [.text]))
                 }
                 List {
-                    NavigationLink("Text Recognize", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]))
+                    NavigationLink("Text Recognize", destination: DetectorView(image: UIImage(named: "wikipedia_computer_vision")!, requestType: [.textRecognize]))
                 }
                 List {
-                    NavigationLink("barcode", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.barcode]))
+                    NavigationLink("barcode", destination: DetectorView(image: UIImage(named: "qr_code")!, requestType: [.barcode]))
                 }
                 List {
-                    NavigationLink("Rect", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]))
-                }
-                List {
-                    NavigationLink("Hand Pose", destination: DetectorView(image: UIImage(named: "ParentChild")!, requestType: [.rect]))
+                    NavigationLink("Rect", destination: DetectorView(image: UIImage(named: "book_keyboard")!, requestType: [.rect]))
                 }
             }
             .navigationTitle("Still Image Detector")

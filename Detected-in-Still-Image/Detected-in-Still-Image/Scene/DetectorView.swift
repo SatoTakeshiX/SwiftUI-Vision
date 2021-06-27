@@ -77,7 +77,7 @@ struct DetectedInfomationView: View {
 struct DetectorView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            DetectorView(image: UIImage(named: "people")!, requestType: [.all])
+            DetectorView(image: UIImage(named: "IMG_4987")!, requestType: [.all])
         }
     }
 }

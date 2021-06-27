@@ -14,6 +14,7 @@ enum VisionRequestTypes {
     case faceLandmarks(drawPoints: [[Bool: [CGPoint]]], info: [[String: String]])
     case word(rectBox: [CGRect], info: [[String: String]])
     case character(rectBox: [CGRect], info: [[String: String]])
+    case textRecognize(info: [[String: String]])
     case barcode
     case rect
 
@@ -89,6 +90,11 @@ final class VisionClient: ObservableObject {
         if requestTypes.contains(.text) {
             requests.append(textDetectionRequest)
         }
+
+        if requestTypes.contains(.textRecognize) {
+            requests.append(textRecognizeRequest)
+        }
+
         return requests
     }
 
@@ -171,6 +177,37 @@ final class VisionClient: ObservableObject {
         // Tell Vision to report bounding box around each character.
         textDetectRequest.reportCharacterBoxes = true
         return textDetectRequest
+    }()
+
+    lazy var textRecognizeRequest: VNRecognizeTextRequest = {
+        let textRecognizeRequest = VNRecognizeTextRequest { [weak self] request, error in
+            guard let self = self else { return }
+            if let error = error {
+                print(error.localizedDescription)
+                self.error = VisionError.visionError(error: error)
+            }
+
+            guard let results = request.results as? [VNRecognizedTextObservation] else {
+                return
+            }
+            let candidatesTexts = results.compactMap { observation -> [String]? in
+                guard observation.confidence > 0.3 else { return nil }
+                let recognizedTexts = observation.topCandidates(3)
+                return recognizedTexts.map { $0.string }
+            }
+
+            let info = candidatesTexts.compactMap { strings -> [String: String] in
+                var output: [String: String] = [:]
+                for (index, string) in strings.enumerated() {
+                    output["candiate \(index)"] = string
+                }
+                return output
+            }
+            self.result = .textRecognize(info: info)
+        }
+
+        textRecognizeRequest.recognitionLevel = .fast
+        return textRecognizeRequest
     }()
 
     func boundingBox(forRegionOfInterest: CGRect,
@@ -256,6 +293,8 @@ final class VisionClient: ObservableObject {
         }
         return charBoxRects.flatMap { $0 }
     }
+
+    // MARK: - Text Recoginaze
 
     private func makeNormalizedPoints(region: VNFaceLandmarkRegion2D, faceBounds: CGRect) -> [CGPoint]? {
         guard region.pointCount > 1 else {

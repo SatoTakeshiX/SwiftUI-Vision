@@ -38,6 +38,8 @@ final class DetectorViewModel: ObservableObject {
                     case .character(let rectBox, let info):
                         self.detectedFrame.append(contentsOf: rectBox)
                         self.detectedInfo.append(contentsOf: info)
+                    case .textRecognize(let info):
+                        self.detectedInfo.append(contentsOf: info)
                     default:
                         break
                 }
