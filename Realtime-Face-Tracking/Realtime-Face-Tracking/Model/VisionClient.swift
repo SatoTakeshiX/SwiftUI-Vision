@@ -9,6 +9,7 @@ import Foundation
 import Vision
 import Combine
 
+
 final class VisionClient: NSObject, ObservableObject {
     enum Mode {
         case faceLandmark // appleのものと一緒
@@ -39,8 +40,6 @@ final class VisionClient: NSObject, ObservableObject {
 
         do {
             try sequenceRequestHandler.perform(trackingRequests, on: pixelBuffer, orientation: orientation)
-
-
         } catch {
             print(error.localizedDescription)
         }
@@ -48,8 +47,6 @@ final class VisionClient: NSObject, ObservableObject {
         // Setup the next round of tracking.
         var newTrackingRequests = [VNTrackObjectRequest]()
         for trackingRequest in trackingRequests {
-            print("\(#function)_after_sequence_\(trackingRequest.results?.count ?? 0)")
-
             guard let results = trackingRequest.results else {
                 return
             }
@@ -66,8 +63,6 @@ final class VisionClient: NSObject, ObservableObject {
                 }
                 newTrackingRequests.append(trackingRequest)
             }
-
-
         }
         self.trackingRequests = newTrackingRequests
 

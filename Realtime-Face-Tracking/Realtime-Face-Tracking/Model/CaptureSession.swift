@@ -8,13 +8,13 @@
 import Foundation
 import AVKit
 import Combine
+import SwiftUI
 
 final class CaptureSession: NSObject, ObservableObject {
 
     struct Outputs {
         let cameraIntrinsicData: CFTypeRef
         let pixelBuffer: CVImageBuffer
-
     }
     private let captureSession = AVCaptureSession()
     private var captureDevice: AVCaptureDevice?
@@ -24,7 +24,7 @@ final class CaptureSession: NSObject, ObservableObject {
     private(set) var previewLayer = AVCaptureVideoPreviewLayer()
 
     var outputs = PassthroughSubject<Outputs, Never>()
-
+    private var cancellable: AnyCancellable?
     override init() {
         super.init()
         setupCaptureSession()
@@ -49,6 +49,20 @@ final class CaptureSession: NSObject, ObservableObject {
         }
 
         makePreviewLayser(session: captureSession)
+
+        // ここだけcombine。TODO: fix later
+        cancellable = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
+            .map { _ in () }
+            .prepend(()) // initial run
+            .sink { [previewLayer] in
+                let interfaceOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
+                if let interfaceOrientation = interfaceOrientation,
+                   let orientation = AVCaptureVideoOrientation(interfaceOrientation: interfaceOrientation)
+                {
+                    previewLayer.connection?.videoOrientation = orientation
+                }
+            }
+
         makeDataOutput()
     }
 
@@ -66,6 +80,7 @@ final class CaptureSession: NSObject, ObservableObject {
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.name = "CameraPreview"
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        previewLayer.contentsGravity = .resizeAspectFill
         previewLayer.backgroundColor = UIColor.green.cgColor
         previewLayer.masksToBounds = true
         self.previewLayer = previewLayer
@@ -73,6 +88,10 @@ final class CaptureSession: NSObject, ObservableObject {
 
     private func makeDataOutput() {
         let videoDataOutput = AVCaptureVideoDataOutput()
+
+        videoDataOutput.videoSettings = [
+            (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA,
+        ]
         // frame落ちたら捨てる処理
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
 
@@ -103,15 +122,30 @@ final class CaptureSession: NSObject, ObservableObject {
         captureSession.commitConfiguration()
     }
 
-    // Removes infrastructure for AVCapture as part of cleanup.
-//    private func teardownAVCapture() {
-//        self.videoDataOutput = nil
-//        self.videoDataOutputQueue = nil
+//    /// - Tag: ConfigureDeviceResolution
+//    fileprivate func highestResolution420Format(for device: AVCaptureDevice) -> (format: AVCaptureDevice.Format, resolution: CGSize)? {
+//        var highestResolutionFormat: AVCaptureDevice.Format? = nil
+//        var highestResolutionDimensions = CMVideoDimensions(width: 0, height: 0)
 //
-//        if let previewLayer = previewLayer {
-//            previewLayer.removeFromSuperlayer()
-//            self.previewLayer = nil
+//        for format in device.formats {
+//            let deviceFormat = format as AVCaptureDevice.Format
+//
+//            let deviceFormatDescription = deviceFormat.formatDescription
+//            if CMFormatDescriptionGetMediaSubType(deviceFormatDescription) == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
+//                let candidateDimensions = CMVideoFormatDescriptionGetDimensions(deviceFormatDescription)
+//                if (highestResolutionFormat == nil) || (candidateDimensions.width > highestResolutionDimensions.width) {
+//                    highestResolutionFormat = deviceFormat
+//                    highestResolutionDimensions = candidateDimensions
+//                }
+//            }
 //        }
+//
+//        if highestResolutionFormat != nil {
+//            let resolution = CGSize(width: CGFloat(highestResolutionDimensions.width), height: CGFloat(highestResolutionDimensions.height))
+//            return (highestResolutionFormat!, resolution)
+//        }
+//
+//        return nil
 //    }
 }
 
@@ -125,5 +159,64 @@ extension CaptureSession: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData, pixelBuffer: pixelBuffer))
+    }
+}
+
+// MARK: - AVCaptureVideoOrientation
+
+extension AVCaptureVideoOrientation: CustomDebugStringConvertible
+{
+    public var debugDescription: String
+    {
+        switch self {
+        case .portrait:
+            return "portrait"
+        case .portraitUpsideDown:
+            return "portraitUpsideDown"
+        case .landscapeRight:
+            return "landscapeRight"
+        case .landscapeLeft:
+            return "landscapeLeft"
+        @unknown default:
+            return "unknown"
+        }
+    }
+
+    public init?(deviceOrientation: UIDeviceOrientation)
+    {
+        switch deviceOrientation {
+        case .portrait:
+            self = .portrait
+        case .portraitUpsideDown:
+            self = .portraitUpsideDown
+        case .landscapeLeft:
+            self = .landscapeRight
+        case .landscapeRight:
+            self = .landscapeLeft
+        case .faceUp,
+             .faceDown,
+             .unknown:
+            return nil
+        @unknown default:
+            return nil
+        }
+    }
+
+    public init?(interfaceOrientation: UIInterfaceOrientation)
+    {
+        switch interfaceOrientation {
+        case .portrait:
+            self = .portrait
+        case .portraitUpsideDown:
+            self = .portraitUpsideDown
+        case .landscapeLeft:
+            self = .landscapeLeft
+        case .landscapeRight:
+            self = .landscapeRight
+        case .unknown:
+            return nil
+        @unknown default:
+            return nil
+        }
     }
 }
