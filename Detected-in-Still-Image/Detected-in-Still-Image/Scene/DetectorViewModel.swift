@@ -30,24 +30,24 @@ final class DetectorViewModel: ObservableObject {
                 switch type {
                     case .faceLandmarks(let drawPoints, let info):
                         self.detectedFaceLandmarkPoints = drawPoints
-                        self.detectedInfo.append(contentsOf: info)
+                        self.detectedInfo = info
                     case .faceRect(let rectBox, let info):
                         self.detectedFrame = rectBox
-                        self.detectedInfo.append(contentsOf: info)
+                        self.detectedInfo = info
                     case .word(let rectBoxes, let info):
-                        self.detectedFrame.append(contentsOf: rectBoxes)
-                        self.detectedInfo.append(contentsOf: info)
+                        self.detectedFrame = rectBoxes
+                        self.detectedInfo = info
                     case .character(let rectBox, let info):
-                        self.detectedFrame.append(contentsOf: rectBox)
-                        self.detectedInfo.append(contentsOf: info)
+                        self.detectedFrame = rectBox
+                        self.detectedInfo = info
                     case .textRecognize(let info):
-                        self.detectedInfo.append(contentsOf: info)
+                        self.detectedInfo = info
                     case .barcode(let rectBoxes, let info):
-                        self.detectedFrame.append(contentsOf: rectBoxes)
-                        self.detectedInfo.append(contentsOf: info)
+                        self.detectedFrame = rectBoxes
+                        self.detectedInfo = info
                     case .rect(let rectBoxes, let info):
-                        self.detectedFrame.append(contentsOf: rectBoxes)
-                        self.detectedInfo.append(contentsOf: info)
+                        self.detectedFrame = rectBoxes
+                        self.detectedInfo = info
                     default:
                         break
                 }
@@ -95,7 +95,6 @@ final class DetectorViewModel: ObservableObject {
     }
 
     func input(imageFrame: CGRect) {
-        print(imageFrame)
        imageViewFramePublisher.send(imageFrame)
     }
 
