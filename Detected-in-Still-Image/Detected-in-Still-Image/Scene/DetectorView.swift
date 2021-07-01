@@ -46,11 +46,24 @@ public struct DetectorView: View {
                     .stroke(Color.blue, lineWidth: 1)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
+                .overlay(
+                    // for retrieve image frame
+                    GeometryReader { proxy -> AnyView in
+                        viewModel.input(imageFrame: proxy.frame(in: .local))
+                        return AnyView(EmptyView())
+                    }
+                )
             DetectedInfomationView(info: viewModel.detectedInfo)
         }
         .onAppear {
             viewModel.onAppear(image: image, detectType: detectType)
         }
+    }
+
+    private func detectViewRect(geo: GeometryProxy) -> AnyView {
+
+        print(geo.frame(in: .local).debugDescription)
+        return AnyView(EmptyView())
     }
 }
 
@@ -77,7 +90,7 @@ struct DetectedInfomationView: View {
 struct DetectorView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            DetectorView(image: UIImage(named: "IMG_4987")!, requestType: [.all])
+            DetectorView(image: UIImage(named: "people")!, requestType: [.all])
         }
     }
 }

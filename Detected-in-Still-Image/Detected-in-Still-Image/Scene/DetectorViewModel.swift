@@ -19,7 +19,9 @@ final class DetectorViewModel: ObservableObject {
     @Published var detectedInfo: [[String: String]] = []
     private var cancellables: Set<AnyCancellable> = []
     private var errorCancellables: Set<AnyCancellable> = []
-    let visionClient = VisionClient()
+    private let visionClient = VisionClient()
+    private var imageViewFramePublisher = PassthroughSubject<CGRect, Never>()
+    private var originImagePublisher = PassthroughSubject<(CGImage, VisionRequestTypes.Set), Never>()
 
     init() {
         visionClient.$result
@@ -58,6 +60,26 @@ final class DetectorViewModel: ObservableObject {
                 print(error?.localizedDescription ?? "")
             }
             .store(in: &errorCancellables)
+
+        imageViewFramePublisher.removeDuplicates().combineLatest(originImagePublisher)
+            .sink { (imageRect, originImageArg) in
+                let (cgImage, detectType) = originImageArg
+                let fullImageWidth = CGFloat(cgImage.width)
+                let fullImageHeight = CGFloat(cgImage.height)
+                let targetWidh = imageRect.width
+                let rate = fullImageWidth / targetWidh
+
+                let imageFrame = CGRect(x: 0, y: 0, width: imageRect.width, height: fullImageHeight / rate)
+                self.visionClient.configure(type: detectType, imageViewFrame: imageFrame)
+
+                print(cgImage)
+                let cgOrientation = CGImagePropertyOrientation(self.image.imageOrientation)
+
+                // clear info
+                self.clearAllInfo()
+                self.visionClient.performVisionRequest(image: cgImage, orientation: cgOrientation)
+            }
+            .store(in: &cancellables)
     }
 
     func onAppear(image: UIImage, detectType: VisionRequestTypes.Set) {
@@ -69,21 +91,12 @@ final class DetectorViewModel: ObservableObject {
             print("Trying to show an image not backed by CGImage!")
             return
         }
+        originImagePublisher.send((cgImage, detectType))
+    }
 
-        let fullImageWidth = CGFloat(cgImage.width)
-        let fullImageHeight = CGFloat(cgImage.height)
-
-        let rate = fullImageWidth / UIScreen.main.bounds.width
-        let imageFrame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: fullImageHeight / rate)
-
-        visionClient.configure(type: detectType, imageViewFrame: imageFrame)
-
-        print(cgImage)
-        let cgOrientation = CGImagePropertyOrientation(image.imageOrientation)
-
-        // clear info
-        detectedInfo.removeAll()
-        visionClient.performVisionRequest(image: cgImage, orientation: cgOrientation)
+    func input(imageFrame: CGRect) {
+        print(imageFrame)
+       imageViewFramePublisher.send(imageFrame)
     }
 
     private func scaleAndOrient(image: UIImage) -> UIImage {
@@ -162,6 +175,12 @@ final class DetectorViewModel: ObservableObject {
             context.concatenate(transform)
             context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         }
+    }
+
+    private func clearAllInfo() {
+        detectedFrame.removeAll()
+        detectedFaceLandmarkPoints.removeAll()
+        detectedInfo.removeAll()
     }
 }
 
