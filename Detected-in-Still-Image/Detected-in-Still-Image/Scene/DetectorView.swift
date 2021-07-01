@@ -79,6 +79,7 @@ struct DetectedInfomationView: View {
                             Text("\(key)")
                             Spacer()
                             Text("\(info[index][key] ?? "")")
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                 }
