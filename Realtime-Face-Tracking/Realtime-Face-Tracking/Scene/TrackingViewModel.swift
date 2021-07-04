@@ -93,12 +93,26 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
 
     }()
     func drawFaceObservations(_ faceObservations: [VNFaceObservation]) {
-        guard let obs = faceObservations.first else { return }
-        let rect = convertBoundingBox(obs.boundingBox, deviceOrientation: UIDevice.current.orientation)
-        let convertedRect = self.previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
-        output = Output(faceRect: convertedRect)
-        detectedLayer.frame = convertedRect
-        previewLayer.addSublayer(detectedLayer)
+        previewLayer.sublayers?.removeSubrange(1...)
+        guard let observation = faceObservations.first else { return }
+        let xMin = observation.boundingBox.minX
+        let yMax = observation.boundingBox.maxY
+
+        var xCoord = xMin * previewLayer.frame.size.width
+        let yCoord = (1 - yMax) * previewLayer.frame.size.height // これがどういうことだったかをもう一度理解する
+        let width = observation.boundingBox.width * previewLayer.frame.size.width
+        let height = observation.boundingBox.height * previewLayer.frame.size.height
+
+        let subfromCenter = xCoord - previewLayer.frame.midX
+        let mirrerdMaxX = previewLayer.frame.midX - subfromCenter
+        xCoord = mirrerdMaxX - width
+
+        let layer = CALayer()
+        layer.frame = CGRect(x: xMin * previewLayer.frame.size.width, y: yCoord, width: width, height: height)
+        layer.borderWidth = 2.0
+        layer.borderColor = UIColor.green.cgColor
+
+        previewLayer.addSublayer(layer)
     }
 
     fileprivate func radiansForDegrees(_ degrees: CGFloat) -> CGFloat {

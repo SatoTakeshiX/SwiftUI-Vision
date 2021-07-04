@@ -38,7 +38,7 @@ final class CaptureSession: NSObject, ObservableObject {
         // use front camera
         if let availableDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera],
                                                                   mediaType: .video,
-                                                                  position: .back).devices.first {
+                                                                  position: .front).devices.first {
             captureDevice = availableDevice
             do {
                 let captureDeviceInput = try AVCaptureDeviceInput(device: availableDevice)
@@ -79,8 +79,8 @@ final class CaptureSession: NSObject, ObservableObject {
     private func makePreviewLayser(session: AVCaptureSession) {
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.name = "CameraPreview"
-        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-        previewLayer.contentsGravity = .resizeAspectFill
+        previewLayer.videoGravity = AVLayerVideoGravity.resize
+        //previewLayer.contentsGravity = .resizeAspectFill
         previewLayer.backgroundColor = UIColor.green.cgColor
         previewLayer.masksToBounds = true
         self.previewLayer = previewLayer
@@ -89,9 +89,9 @@ final class CaptureSession: NSObject, ObservableObject {
     private func makeDataOutput() {
         let videoDataOutput = AVCaptureVideoDataOutput()
 
-        videoDataOutput.videoSettings = [
-            (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA,
-        ]
+//        videoDataOutput.videoSettings = [
+//            (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA,
+//        ]
         // frame落ちたら捨てる処理
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
 
@@ -107,7 +107,7 @@ final class CaptureSession: NSObject, ObservableObject {
         }
 
         // isEnable: Indicates whether the connection's output should consume data. このプロパティの値は、セッションの実行時にレシーバーの出力が接続された inputPort からのデータを消費するかどうかを決定する BOOL です。クライアントは、このプロパティを設定して、キャプチャ中に特定の出力へのデータの流れを停止できます。デフォルト値は YES です。
-        videoDataOutput.connection(with: .video)?.isEnabled = true
+        //videoDataOutput.connection(with: .video)?.isEnabled = true
 
         // to use CMGetAttachment in sampleBuffer
         if let captureConnection = videoDataOutput.connection(with: .video) {
@@ -151,14 +151,20 @@ final class CaptureSession: NSObject, ObservableObject {
 
 extension CaptureSession: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let cameraIntrinsicData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) else {
-            return
-        }
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            print("Failed to obtain a CVPixelBuffer for the current output frame.")
-            return
-        }
-        self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData, pixelBuffer: pixelBuffer))
+//        guard let cameraIntrinsicData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) else {
+//            return
+//        }
+//        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+//            print("Failed to obtain a CVPixelBuffer for the current output frame.")
+//            return
+//        }
+
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        guard let camData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) else { return }
+
+        self.outputs.send(.init(cameraIntrinsicData: camData, pixelBuffer: pixelBuffer))
+        //self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData, pixelBuffer: pixelBuffer))
     }
 }
 

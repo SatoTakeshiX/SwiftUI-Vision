@@ -37,20 +37,6 @@ final class VisionClient: NSObject, ObservableObject {
     override init() {
         super.init()
         setup()
-        bind()
-    }
-
-    func bind() {
-        $state.sink { [weak self] state in
-            guard let self = self else { return }
-            switch state {
-                case .stop:
-                    break
-                case .tracking(let trackingRequests):
-                    break
-            }
-
-        }.store(in: &subscriber)
     }
 
     func request(cvPixelBuffer pixelBuffer: CVPixelBuffer, orientation: CGImagePropertyOrientation, options: [VNImageOption : Any] = [:]) {
@@ -95,6 +81,7 @@ final class VisionClient: NSObject, ObservableObject {
 
                 if newTrackingRequests.isEmpty {
                     // Nothing to track, so abort.
+                    self.visionFaceResults = []
                     return
                 }
 
@@ -119,10 +106,12 @@ final class VisionClient: NSObject, ObservableObject {
                     })
 
                     guard let trackingResults = trackingRequest.results else {
+                        self.visionFaceResults = []
                         return
                     }
 
                     guard let observation = trackingResults[0] as? VNDetectedObjectObservation else {
+                        self.visionFaceResults = []
                         return
                     }
                     let faceObservation = VNFaceObservation(boundingBox: observation.boundingBox)
