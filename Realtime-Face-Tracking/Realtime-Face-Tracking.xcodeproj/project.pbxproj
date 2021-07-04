@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		302F494B2691504100FBE5E9 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302F494A2691504100FBE5E9 /* MockData.swift */; };
+		302F494D269150B200FBE5E9 /* VisionClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302F494C269150B200FBE5E9 /* VisionClientTests.swift */; };
+		302F494F2691531A00FBE5E9 /* Test.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 302F494E2691531A00FBE5E9 /* Test.xcassets */; };
 		30A4DC562664DE49005E0B30 /* Realtime_Face_TrackingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC552664DE49005E0B30 /* Realtime_Face_TrackingApp.swift */; };
 		30A4DC582664DE49005E0B30 /* TrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC572664DE49005E0B30 /* TrackingView.swift */; };
 		30A4DC5A2664DE4B005E0B30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30A4DC592664DE4B005E0B30 /* Assets.xcassets */; };
 		30A4DC5D2664DE4B005E0B30 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30A4DC5C2664DE4B005E0B30 /* Preview Assets.xcassets */; };
-		30A4DC682664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC672664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift */; };
+		30A4DC682664DE4B005E0B30 /* MockDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC672664DE4B005E0B30 /* MockDataTests.swift */; };
 		30A4DC732664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC722664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift */; };
 		30A4DC832664E3CB005E0B30 /* CaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC822664E3CB005E0B30 /* CaptureSession.swift */; };
 		30A4DC862664FE56005E0B30 /* CustomLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A4DC852664FE56005E0B30 /* CustomLayerView.swift */; };
@@ -37,6 +40,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		302F494A2691504100FBE5E9 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
+		302F494C269150B200FBE5E9 /* VisionClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionClientTests.swift; sourceTree = "<group>"; };
+		302F494E2691531A00FBE5E9 /* Test.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Test.xcassets; sourceTree = "<group>"; };
 		30A4DC522664DE49005E0B30 /* Realtime-Face-Tracking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Realtime-Face-Tracking.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30A4DC552664DE49005E0B30 /* Realtime_Face_TrackingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime_Face_TrackingApp.swift; sourceTree = "<group>"; };
 		30A4DC572664DE49005E0B30 /* TrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingView.swift; sourceTree = "<group>"; };
@@ -44,7 +50,7 @@
 		30A4DC5C2664DE4B005E0B30 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		30A4DC5E2664DE4B005E0B30 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30A4DC632664DE4B005E0B30 /* Realtime-Face-TrackingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Realtime-Face-TrackingTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		30A4DC672664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime_Face_TrackingTests.swift; sourceTree = "<group>"; };
+		30A4DC672664DE4B005E0B30 /* MockDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataTests.swift; sourceTree = "<group>"; };
 		30A4DC692664DE4B005E0B30 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30A4DC6E2664DE4B005E0B30 /* Realtime-Face-TrackingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Realtime-Face-TrackingUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30A4DC722664DE4B005E0B30 /* Realtime_Face_TrackingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realtime_Face_TrackingUITests.swift; sourceTree = "<group>"; };
@@ -125,8 +131,11 @@
 		30A4DC662664DE4B005E0B30 /* Realtime-Face-TrackingTests */ = {
 			isa = PBXGroup;
 			children = (
-				30A4DC672664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift */,
+				30A4DC672664DE4B005E0B30 /* MockDataTests.swift */,
 				30A4DC692664DE4B005E0B30 /* Info.plist */,
+				302F494A2691504100FBE5E9 /* MockData.swift */,
+				302F494C269150B200FBE5E9 /* VisionClientTests.swift */,
+				302F494E2691531A00FBE5E9 /* Test.xcassets */,
 			);
 			path = "Realtime-Face-TrackingTests";
 			sourceTree = "<group>";
@@ -278,6 +287,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				302F494F2691531A00FBE5E9 /* Test.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,7 +318,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30A4DC682664DE4B005E0B30 /* Realtime_Face_TrackingTests.swift in Sources */,
+				30A4DC682664DE4B005E0B30 /* MockDataTests.swift in Sources */,
+				302F494D269150B200FBE5E9 /* VisionClientTests.swift in Sources */,
+				302F494B2691504100FBE5E9 /* MockData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

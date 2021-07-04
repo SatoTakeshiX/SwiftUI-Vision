@@ -38,7 +38,7 @@ final class CaptureSession: NSObject, ObservableObject {
         // use front camera
         if let availableDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera],
                                                                   mediaType: .video,
-                                                                  position: .front).devices.first {
+                                                                  position: .back).devices.first {
             captureDevice = availableDevice
             do {
                 let captureDeviceInput = try AVCaptureDeviceInput(device: availableDevice)
