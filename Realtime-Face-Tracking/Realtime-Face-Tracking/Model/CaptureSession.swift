@@ -82,7 +82,9 @@ final class CaptureSession: NSObject, ObservableObject {
         previewLayer.name = "CameraPreview"
         previewLayer.videoGravity = .resizeAspectFill
         previewLayer.backgroundColor = UIColor.green.cgColor
-        previewLayer.masksToBounds = true
+        previewLayer.borderWidth = 2
+        previewLayer.borderColor = UIColor.green.cgColor
+        //previewLayer.masksToBounds = true
         self.previewLayer = previewLayer
     }
 
@@ -117,7 +119,6 @@ final class CaptureSession: NSObject, ObservableObject {
         self.videoDataOutputQueue = videoDataOutputQueue
 
         captureSession.commitConfiguration()
-        previewLayer.videoGravity = .resize
     }
 }
 
