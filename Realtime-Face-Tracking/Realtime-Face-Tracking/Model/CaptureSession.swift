@@ -81,6 +81,7 @@ final class CaptureSession: NSObject, ObservableObject {
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.name = "CameraPreview"
         previewLayer.videoGravity = .resizeAspectFill
+
         previewLayer.backgroundColor = UIColor.green.cgColor
         previewLayer.borderWidth = 2
         previewLayer.borderColor = UIColor.green.cgColor

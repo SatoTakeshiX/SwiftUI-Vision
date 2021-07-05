@@ -96,12 +96,64 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
     func drawFaceObservations(_ faceObservations: [VNFaceObservation]) {
         previewLayer.sublayers?.removeSubrange(1...)
 
+        /**
+         pixel sizeと同じlayerを作成
+         */
+        let captureDeviceResolution = self.pixelSize
 
+        let captureDeviceBounds = CGRect(x: 0,
+                                         y: 0,
+                                         width: captureDeviceResolution.width,
+                                         height: captureDeviceResolution.height)
 
+        let captureDeviceBoundsCenterPoint = CGPoint(x: captureDeviceBounds.midX,
+                                                     y: captureDeviceBounds.midY)
 
+        let normalizedCenterPoint = CGPoint(x: 0.5, y: 0.5)
+        let overlayLayer = CALayer()
+        overlayLayer.name = "DetectionOverlay"
+        overlayLayer.masksToBounds = true
+        overlayLayer.anchorPoint = normalizedCenterPoint
+        overlayLayer.bounds = captureDeviceBounds
+        overlayLayer.position = captureDeviceBoundsCenterPoint//CGPoint(x: previewLayer.bounds.midX, y: previewLayer.bounds.midY)
+        overlayLayer.borderColor = UIColor.blue.cgColor
+        overlayLayer.borderWidth = 4
 
+        let videoPreviewRect = previewLayer.layerRectConverted(fromMetadataOutputRect: CGRect(x: 0, y: 0, width: 1, height: 1))
+        var rotation: CGFloat
+        var scaleX: CGFloat
+        var scaleY: CGFloat
 
+        // Rotate the layer into screen orientation.
+        switch UIDevice.current.orientation {
+        case .portraitUpsideDown:
+            rotation = 180
+            scaleX = videoPreviewRect.width / captureDeviceResolution.width
+            scaleY = videoPreviewRect.height / captureDeviceResolution.height
 
+        case .landscapeLeft:
+            rotation = 90
+            scaleX = videoPreviewRect.height / captureDeviceResolution.width
+            scaleY = scaleX
+
+        case .landscapeRight:
+            rotation = -90
+            scaleX = videoPreviewRect.height / captureDeviceResolution.width
+            scaleY = scaleX
+
+        default:
+            rotation = 0
+            scaleX = videoPreviewRect.width / captureDeviceResolution.width
+            scaleY = videoPreviewRect.height / captureDeviceResolution.height
+        }
+
+        // Scale and mirror the image to ensure upright presentation.
+        let affineTransform = CGAffineTransform(rotationAngle: radiansForDegrees(rotation))
+            .scaledBy(x: scaleX, y: -scaleY)
+        overlayLayer.setAffineTransform(affineTransform)
+        overlayLayer.position = CGPoint(x: previewLayer.bounds.midX, y: previewLayer.bounds.midY)
+
+        previewLayer.addSublayer(overlayLayer)
 
 
 
@@ -109,17 +161,17 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
         let xMin = observation.boundingBox.minX
         let yMax = observation.boundingBox.maxY
 
-        var xCoord = xMin * previewLayer.frame.size.width
-        let yCoord = (1 - yMax) * previewLayer.frame.size.height // これがどういうことだったかをもう一度理解する
-        let width = observation.boundingBox.width * previewLayer.frame.size.width
-        let height = observation.boundingBox.height * previewLayer.frame.size.height
+        var xCoord = xMin * overlayLayer.frame.size.width
+        let yCoord = (1 - yMax) * overlayLayer.frame.size.height // これがどういうことだったかをもう一度理解する
+        let width = observation.boundingBox.width * overlayLayer.frame.size.width
+        let height = observation.boundingBox.height * overlayLayer.frame.size.height
 
-        let subfromCenter = xCoord - previewLayer.frame.midX
-        let mirrerdMaxX = previewLayer.frame.midX - subfromCenter
+        let subfromCenter = xCoord - overlayLayer.frame.midX
+        let mirrerdMaxX = overlayLayer.frame.midX - subfromCenter
         xCoord = mirrerdMaxX - width
 
         let layer = CALayer()
-        layer.frame = CGRect(x: xMin * previewLayer.frame.size.width, y: yCoord, width: width, height: height)
+        layer.frame = CGRect(x: xMin * overlayLayer.frame.size.width, y: yCoord, width: width, height: height)
         layer.borderWidth = 2.0
         layer.borderColor = UIColor.green.cgColor
 
