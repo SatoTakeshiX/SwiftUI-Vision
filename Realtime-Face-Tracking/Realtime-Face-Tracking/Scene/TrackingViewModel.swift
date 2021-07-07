@@ -95,10 +95,6 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
     }()
     func drawFaceObservations(_ faceObservations: [VNFaceObservation]) {
         previewLayer.sublayers?.removeSubrange(1...)
-
-        /**
-         pixel sizeと同じlayerを作成
-         */
         let captureDeviceResolution = self.pixelSize
 
         let captureDeviceBounds = CGRect(x: 0,
@@ -155,8 +151,6 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
 
         previewLayer.addSublayer(overlayLayer)
 
-
-
         guard let observation = faceObservations.first else { return }
         let xMin = observation.boundingBox.minX
         let yMax = observation.boundingBox.maxY
@@ -171,7 +165,7 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
         xCoord = mirrerdMaxX - width
 
         let layer = CALayer()
-        layer.frame = CGRect(x: xMin * overlayLayer.frame.size.width, y: yCoord, width: width, height: height)
+        layer.frame = CGRect(x: xMin * overlayLayer.frame.size.width + overlayLayer.frame.minX, y: yCoord, width: width, height: height)
         layer.borderWidth = 2.0
         layer.borderColor = UIColor.green.cgColor
 
