@@ -215,6 +215,10 @@ final class VisionClient: ObservableObject {
         }
 
         textRecognizeRequest.recognitionLevel = .fast
+
+        textRecognizeRequest.progressHandler = { request , progress, error in
+            print("progress: \(progress)")
+        }
         return textRecognizeRequest
     }()
 

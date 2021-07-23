@@ -35,10 +35,10 @@ final class DetectorViewModel: ObservableObject {
                         self.detectedFrame = rectBox
                         self.detectedInfo = info
                     case .word(let rectBoxes, let info):
-                        self.detectedFrame = rectBoxes
+                        self.detectedFrame += rectBoxes
                         self.detectedInfo = info
                     case .character(let rectBox, let info):
-                        self.detectedFrame = rectBox
+                        self.detectedFrame += rectBox
                         self.detectedInfo = info
                     case .textRecognize(let info):
                         self.detectedInfo = info
