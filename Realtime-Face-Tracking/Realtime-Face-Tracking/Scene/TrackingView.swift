@@ -8,21 +8,14 @@
 import SwiftUI
 
 struct TrackingView: View {
-    @StateObject var viewModel = TrackingViewModel() // initでsessionを作成しないとpreviewで表示されない
+    @StateObject var viewModel = TrackingViewModel()
     var closePath: Bool = true
     var body: some View {
         #if targetEnvironment(simulator)
         Text("please run on real device")
         #else
         ZStack {
-            CustomLayerView(layer: viewModel.previewLayer)
-
-//            Path { path in
-//                path.addRect(viewModel.output?.faceRect ?? .zero)
-//            }
-//            .applying(.identity)
-//            .stroke()
-//            .fill(Color.red)
+            CustomLayerView(previewLayer: viewModel.previewLayer, objectObservations: $viewModel.objectObservations, pixelSize: $viewModel.pixelSize)
         }
         .edgesIgnoringSafeArea(.all)
         .onAppear {
