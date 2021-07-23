@@ -13,7 +13,7 @@ import AVFoundation
 struct CustomLayerView: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIViewController
     var previewLayer: AVCaptureVideoPreviewLayer
-    @Binding var faceObservations: [VNFaceObservation]
+    @Binding var objectObservations: [VNDetectedObjectObservation]
     @Binding var pixelSize: CGSize
 
     func makeUIViewController(context: Context) -> UIViewController {
@@ -25,14 +25,14 @@ struct CustomLayerView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         previewLayer.frame = uiViewController.view.layer.frame
-        drawFaceObservations(faceObservations)
+        drawFaceObservations(objectObservations)
     }
 
     private func radiansForDegrees(_ degrees: CGFloat) -> CGFloat {
         return CGFloat(Double(degrees) * Double.pi / 180.0)
     }
 
-    func drawFaceObservations(_ faceObservations: [VNFaceObservation]) {
+    func drawFaceObservations(_ observations: [VNDetectedObjectObservation]) {
         previewLayer.sublayers?.removeSubrange(1...)
         let captureDeviceResolution = self.pixelSize
 
@@ -90,7 +90,7 @@ struct CustomLayerView: UIViewControllerRepresentable {
 
         previewLayer.addSublayer(overlayLayer)
 
-        guard let observation = faceObservations.first else { return }
+        guard let observation = objectObservations.first else { return }
         let xMin = observation.boundingBox.minX
         let yMax = observation.boundingBox.maxY
 

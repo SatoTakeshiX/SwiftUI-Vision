@@ -15,17 +15,8 @@ final class VisionClient: NSObject, ObservableObject {
     enum State {
         case stop
         case tracking(trackingRequests: [VNTrackObjectRequest])
-
-//        var detectionRequests: [VNDetectFaceRectanglesRequest]? {
-//            switch self {
-//                case .faceDetected(let trackingRequests, let ):
-//                    return detectionRequests
-//                default:
-//                    return nil
-//            }
-//        }
     }
-    @Published var visionFaceResults: [VNFaceObservation] = []
+    @Published var visionObjectObservations: [VNDetectedObjectObservation] = []
     @Published var state: State = .stop
 
     // Vision requests
@@ -68,6 +59,7 @@ final class VisionClient: NSObject, ObservableObject {
                     if !request.isLastFrame {
                         if observation.confidence > 0.3 {
                             request.inputObservation = observation
+
                         } else {
                             request.isLastFrame = true
                         }
@@ -81,54 +73,13 @@ final class VisionClient: NSObject, ObservableObject {
 
                 if newTrackingRequests.isEmpty {
                     // Nothing to track, so abort.
-                    self.visionFaceResults = []
+                    self.visionObjectObservations = []
                     return
                 }
 
-                // Perform face landmark tracking on detected faces.
-                var faceLandmarkRequests = [VNDetectFaceLandmarksRequest]()
-                
-                // Perform landmark detection on tracked faces.
-                for trackingRequest in newTrackingRequests {
-
-                    let faceLandmarksRequest = VNDetectFaceLandmarksRequest(completionHandler: { (request, error) in
-
-                        if error != nil {
-                            print("FaceLandmarks error: \(String(describing: error)).")
-                        }
-
-                        guard let landmarksRequest = request as? VNDetectFaceLandmarksRequest,
-                            let results = landmarksRequest.results as? [VNFaceObservation] else {
-                                return
-                        }
-
-                        self.visionFaceResults = results
-                    })
-
-                    guard let trackingResults = trackingRequest.results else {
-                        self.visionFaceResults = []
-                        return
-                    }
-
-                    guard let observation = trackingResults[0] as? VNDetectedObjectObservation else {
-                        self.visionFaceResults = []
-                        return
-                    }
-                    let faceObservation = VNFaceObservation(boundingBox: observation.boundingBox)
-                    faceLandmarksRequest.inputFaceObservations = [faceObservation]
-
-                    // Continue to track detected facial landmarks.
-                    faceLandmarkRequests.append(faceLandmarksRequest)
-
-                    let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer,
-                                                                    orientation: orientation,
-                                                                    options: options)
-
-                    do {
-                        try imageRequestHandler.perform(faceLandmarkRequests)
-                    } catch let error as NSError {
-                        NSLog("Failed to perform FaceLandmarkRequest: %@", error)
-                    }
+                newTrackingRequests.forEach { request in
+                    guard let result = request.results as? [VNDetectedObjectObservation] else { return }
+                    self.visionObjectObservations = result
                 }
         }
     }

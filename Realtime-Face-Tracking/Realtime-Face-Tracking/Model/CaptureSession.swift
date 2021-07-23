@@ -85,7 +85,6 @@ final class CaptureSession: NSObject, ObservableObject {
         previewLayer.backgroundColor = UIColor.green.cgColor
         previewLayer.borderWidth = 2
         previewLayer.borderColor = UIColor.green.cgColor
-        //previewLayer.masksToBounds = true
         self.previewLayer = previewLayer
     }
 
@@ -97,9 +96,6 @@ final class CaptureSession: NSObject, ObservableObject {
         ]
         // frame落ちたら捨てる処理
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
-
-        // Create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured.
-        // A serial dispatch queue must be used to guarantee that video frames will be delivered in order.
         let videoDataOutputQueue = DispatchQueue(label: "com.Personal-Factory.Realtime-Face-Tracking")
         videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
 
@@ -135,7 +131,6 @@ extension CaptureSession: AVCaptureVideoDataOutputSampleBufferDelegate {
 
         let width = CVPixelBufferGetWidth(pixelBuffer)
         let hight = CVPixelBufferGetHeight(pixelBuffer)
-        print("width: \(width): hight:\(hight)")
 
         self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData,
                                 pixelBuffer: pixelBuffer,
