@@ -15,7 +15,7 @@ struct TrackingView: View {
         Text("please run on real device")
         #else
         ZStack {
-            CustomLayerView(previewLayer: viewModel.previewLayer, objectObservations: $viewModel.objectObservations, pixelSize: $viewModel.pixelSize)
+            CustomLayerView(previewLayer: viewModel.previewLayer, detectedRect: $viewModel.detectedRects, pixelSize: $viewModel.pixelSize)
         }
         .edgesIgnoringSafeArea(.all)
         .onAppear {

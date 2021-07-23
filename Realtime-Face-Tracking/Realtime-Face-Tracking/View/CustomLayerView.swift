@@ -6,14 +6,13 @@
 //
 
 import SwiftUI
-import Vision
 import AVFoundation
 /// UIViewRepresentableを使うとview.frameがzeroになりlayerが描画されない。
 /// UIViewControllerRepresentableを利用するとviewController.viewは端末サイズが与えられる
 struct CustomLayerView: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIViewController
     var previewLayer: AVCaptureVideoPreviewLayer
-    @Binding var objectObservations: [VNDetectedObjectObservation]
+    @Binding var detectedRect: [CGRect]
     @Binding var pixelSize: CGSize
 
     func makeUIViewController(context: Context) -> UIViewController {
@@ -25,14 +24,14 @@ struct CustomLayerView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         previewLayer.frame = uiViewController.view.layer.frame
-        drawFaceObservations(objectObservations)
+        drawFaceObservations(detectedRect)
     }
 
     private func radiansForDegrees(_ degrees: CGFloat) -> CGFloat {
         return CGFloat(Double(degrees) * Double.pi / 180.0)
     }
 
-    func drawFaceObservations(_ observations: [VNDetectedObjectObservation]) {
+    func drawFaceObservations(_ detectedRects: [CGRect]) {
         previewLayer.sublayers?.removeSubrange(1...)
         let captureDeviceResolution = self.pixelSize
 
@@ -90,25 +89,27 @@ struct CustomLayerView: UIViewControllerRepresentable {
 
         previewLayer.addSublayer(overlayLayer)
 
-        guard let observation = objectObservations.first else { return }
-        let xMin = observation.boundingBox.minX
-        let yMax = observation.boundingBox.maxY
+        let layers = detectedRects.compactMap { detectedRect -> CALayer in
+            let xMin = detectedRect.minX
+            let yMax = detectedRect.maxY
 
-        var xCoord = xMin * overlayLayer.frame.size.width
-        let yCoord = (1 - yMax) * overlayLayer.frame.size.height // これがどういうことだったかをもう一度理解する
-        let width = observation.boundingBox.width * overlayLayer.frame.size.width
-        let height = observation.boundingBox.height * overlayLayer.frame.size.height
+            var xCoord = xMin * overlayLayer.frame.size.width
+            let yCoord = (1 - yMax) * overlayLayer.frame.size.height // これがどういうことだったかをもう一度理解する
+            let width = detectedRect.width * overlayLayer.frame.size.width
+            let height = detectedRect.height * overlayLayer.frame.size.height
 
-        let subfromCenter = xCoord - overlayLayer.frame.midX
-        let mirrerdMaxX = overlayLayer.frame.midX - subfromCenter
-        xCoord = mirrerdMaxX - width
+            let subfromCenter = xCoord - overlayLayer.frame.midX
+            let mirrerdMaxX = overlayLayer.frame.midX - subfromCenter
+            xCoord = mirrerdMaxX - width
 
-        let layer = CALayer()
-        layer.frame = CGRect(x: xMin * overlayLayer.frame.size.width + overlayLayer.frame.minX, y: yCoord, width: width, height: height)
-        layer.borderWidth = 2.0
-        layer.borderColor = UIColor.green.cgColor
+            let layer = CALayer()
+            layer.frame = CGRect(x: xMin * overlayLayer.frame.size.width + overlayLayer.frame.minX, y: yCoord, width: width, height: height)
+            layer.borderWidth = 2.0
+            layer.borderColor = UIColor.green.cgColor
+            return layer
+        }
 
-        previewLayer.addSublayer(layer)
+        layers.forEach { self.previewLayer.addSublayer($0) }
     }
 }
 //

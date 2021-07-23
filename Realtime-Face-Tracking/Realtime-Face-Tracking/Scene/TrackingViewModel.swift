@@ -19,7 +19,7 @@ final class TrackingViewModel: ObservableObject {
         return captureSession.previewLayer
     }
 
-    @Published var objectObservations: [VNDetectedObjectObservation] = []
+    @Published var detectedRects: [CGRect] = []
     private var cancellables: Set<AnyCancellable> = []
 
     init() {
@@ -49,7 +49,10 @@ final class TrackingViewModel: ObservableObject {
 
         visionClient.$visionObjectObservations
             .receive(on: RunLoop.main)
-            .assign(to: &$objectObservations)
+            .map { observations -> [CGRect] in
+                return observations.map { $0.boundingBox}
+            }
+            .assign(to: &$detectedRects)
     }
 
     func startSession() {
