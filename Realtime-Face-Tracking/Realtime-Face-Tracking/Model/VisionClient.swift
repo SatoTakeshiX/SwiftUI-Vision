@@ -87,7 +87,7 @@ final class VisionClient: NSObject, ObservableObject {
 
                 // Perform face landmark tracking on detected faces.
                 var faceLandmarkRequests = [VNDetectFaceLandmarksRequest]()
-
+                
                 // Perform landmark detection on tracked faces.
                 for trackingRequest in newTrackingRequests {
 
