@@ -15,6 +15,7 @@ final class CaptureSession: NSObject, ObservableObject {
     struct Outputs {
         let cameraIntrinsicData: CFTypeRef
         let pixelBuffer: CVImageBuffer
+        let pixelBufferSize: CGSize
     }
     private let captureSession = AVCaptureSession()
     private var captureDevice: AVCaptureDevice?
@@ -79,10 +80,12 @@ final class CaptureSession: NSObject, ObservableObject {
     private func makePreviewLayser(session: AVCaptureSession) {
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.name = "CameraPreview"
-        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-        previewLayer.contentsGravity = .resizeAspectFill
+        previewLayer.videoGravity = .resizeAspectFill
+
         previewLayer.backgroundColor = UIColor.green.cgColor
-        previewLayer.masksToBounds = true
+        previewLayer.borderWidth = 2
+        previewLayer.borderColor = UIColor.green.cgColor
+        //previewLayer.masksToBounds = true
         self.previewLayer = previewLayer
     }
 
@@ -106,9 +109,6 @@ final class CaptureSession: NSObject, ObservableObject {
             captureSession.addOutput(videoDataOutput)
         }
 
-        // isEnable: Indicates whether the connection's output should consume data. このプロパティの値は、セッションの実行時にレシーバーの出力が接続された inputPort からのデータを消費するかどうかを決定する BOOL です。クライアントは、このプロパティを設定して、キャプチャ中に特定の出力へのデータの流れを停止できます。デフォルト値は YES です。
-        videoDataOutput.connection(with: .video)?.isEnabled = true
-
         // to use CMGetAttachment in sampleBuffer
         if let captureConnection = videoDataOutput.connection(with: .video) {
             if captureConnection.isCameraIntrinsicMatrixDeliverySupported {
@@ -121,32 +121,6 @@ final class CaptureSession: NSObject, ObservableObject {
 
         captureSession.commitConfiguration()
     }
-
-//    /// - Tag: ConfigureDeviceResolution
-//    fileprivate func highestResolution420Format(for device: AVCaptureDevice) -> (format: AVCaptureDevice.Format, resolution: CGSize)? {
-//        var highestResolutionFormat: AVCaptureDevice.Format? = nil
-//        var highestResolutionDimensions = CMVideoDimensions(width: 0, height: 0)
-//
-//        for format in device.formats {
-//            let deviceFormat = format as AVCaptureDevice.Format
-//
-//            let deviceFormatDescription = deviceFormat.formatDescription
-//            if CMFormatDescriptionGetMediaSubType(deviceFormatDescription) == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
-//                let candidateDimensions = CMVideoFormatDescriptionGetDimensions(deviceFormatDescription)
-//                if (highestResolutionFormat == nil) || (candidateDimensions.width > highestResolutionDimensions.width) {
-//                    highestResolutionFormat = deviceFormat
-//                    highestResolutionDimensions = candidateDimensions
-//                }
-//            }
-//        }
-//
-//        if highestResolutionFormat != nil {
-//            let resolution = CGSize(width: CGFloat(highestResolutionDimensions.width), height: CGFloat(highestResolutionDimensions.height))
-//            return (highestResolutionFormat!, resolution)
-//        }
-//
-//        return nil
-//    }
 }
 
 extension CaptureSession: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -158,7 +132,14 @@ extension CaptureSession: AVCaptureVideoDataOutputSampleBufferDelegate {
             print("Failed to obtain a CVPixelBuffer for the current output frame.")
             return
         }
-        self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData, pixelBuffer: pixelBuffer))
+
+        let width = CVPixelBufferGetWidth(pixelBuffer)
+        let hight = CVPixelBufferGetHeight(pixelBuffer)
+        print("width: \(width): hight:\(hight)")
+
+        self.outputs.send(.init(cameraIntrinsicData: cameraIntrinsicData,
+                                pixelBuffer: pixelBuffer,
+                                pixelBufferSize: CGSize(width: width, height: hight)))
     }
 }
 

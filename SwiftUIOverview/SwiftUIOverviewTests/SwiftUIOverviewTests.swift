@@ -1,14 +1,14 @@
 //
-//  Realtime_Face_TrackingTests.swift
-//  Realtime-Face-TrackingTests
+//  SwiftUIOverviewTests.swift
+//  SwiftUIOverviewTests
 //
-//  Created by satoutakeshi on 2021/05/31.
+//  Created by satoutakeshi on 2021/07/16.
 //
 
 import XCTest
-@testable import Realtime_Face_Tracking
+@testable import SwiftUIOverview
 
-class Realtime_Face_TrackingTests: XCTestCase {
+class SwiftUIOverviewTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

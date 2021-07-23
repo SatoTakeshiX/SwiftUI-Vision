@@ -287,10 +287,8 @@ final class VisionClient: ObservableObject {
         var rect = forRegionOfInterest
 
         // Reposition origin.
-        rect.origin.x *= imageWidth
-        rect.origin.x += bounds.origin.x
-        //
-        rect.origin.y = (rect.origin.y) * imageHeight + bounds.origin.y
+        rect.origin.x = rect.origin.x * imageWidth + bounds.origin.x
+        rect.origin.y = rect.origin.y * imageHeight + bounds.origin.y
 
         // Rescale normalized coordinates.
         rect.size.width *= imageWidth

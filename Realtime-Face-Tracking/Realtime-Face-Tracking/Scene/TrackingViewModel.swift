@@ -19,26 +19,16 @@ protocol ViewModelable {
 final class TrackingViewModel: ObservableObject, ViewModelable {
 
     struct Output {
-        /**
-         in landmarkRegion: VNFaceLandmarkRegion2D,
-                                    applying affineTransform: CGAffineTransform,
-                                    closingWhenComplete closePath: Bool
-         この3つが必要
-         */
-        //let landmarkRegion: VNFaceLandmarks2D
         let faceRect: CGRect
-        //let affineTransform: CGAffineTransform
-        //let closePath: Bool
     }
 
     let captureSession = CaptureSession()
-    let visionClient = VisionClient(mode: .faceLandmark)
+    let visionClient = VisionClient()
 
     var previewLayer: AVCaptureVideoPreviewLayer {
         return captureSession.previewLayer
     }
 
-    //@Published var output: PassthroughSubject<Output, Never> = PassthroughSubject()
     @Published var output: Output?
     private var cancellables: Set<AnyCancellable> = []
 
@@ -46,32 +36,32 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
         bind()
     }
 
-    var resolution: CGSize = .zero
+    var pixelSize: CGSize = .zero
 
     func bind() {
-        captureSession.outputs.sink { [weak self] output in
-            guard let self = self else { return }
+        captureSession.outputs.map { output -> ([VNImageOption: AnyObject], CVImageBuffer, CGSize) in
             var requestHandlerOptions: [VNImageOption: AnyObject] = [:]
             let cameraIntrinsicData = CMGetAttachment(output.pixelBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil)
             if cameraIntrinsicData != nil {
                 requestHandlerOptions[VNImageOption.cameraIntrinsics] = cameraIntrinsicData
             }
-            self.visionClient.request(cvPixelBuffer: output.pixelBuffer,
+            return (requestHandlerOptions, output.pixelBuffer, output.pixelBufferSize)
+        }
+        .sink { [weak self] (options, pixelBuffer, pixelSize) in
+            guard let self = self else { return }
+            self.pixelSize = pixelSize
+            self.visionClient.request(cvPixelBuffer: pixelBuffer,
                                       orientation: self.exifOrientationForDeviceOrientation(UIDevice.current.orientation),
-                                      options: requestHandlerOptions)
+                                      options: options)
+        }
+        .store(in: &cancellables)
 
-        }.store(in: &cancellables)
-
-        visionClient.$visionResults.sink { [weak self] observations in
+        visionClient.$visionFaceResults
+            .receive(on: RunLoop.main)
+            .sink { [weak self] observations in
             guard let self = self else { return }
             print(observations.description)
-            /**
-             [<VNFaceObservation: 0x101306090> FB43095B-8C93-4026-8206-D9BEEFF8B888 requestRevision=0 confidence=1.000000 timeRange={{0/1 = 0.000}, {0/1 = 0.000}} boundingBox=[0.156562, 0.26911, 0.537341, 0.43712] VNFaceLandmarks2D [VNRequestFaceLandmarksConstellation76Points, confidence=0.827271]]
-             値は取れた。ここまではよし
-             */
             self.drawFaceObservations(observations)
-
-
         }.store(in: &cancellables)
     }
 
@@ -104,64 +94,82 @@ final class TrackingViewModel: ObservableObject, ViewModelable {
 
     }()
     func drawFaceObservations(_ faceObservations: [VNFaceObservation]) {
-        /**
-         pathはSwiftUIで扱う
-         */
+        previewLayer.sublayers?.removeSubrange(1...)
+        let captureDeviceResolution = self.pixelSize
 
-        guard let obs = faceObservations.first else { return }
-        let rect = convertBoundingBox(obs.boundingBox, deviceOrientation: UIDevice.current.orientation)
-        let convertedRect = self.previewLayer.layerRectConverted(fromMetadataOutputRect: rect)
-        output = Output(faceRect: convertedRect)
-        detectedLayer.frame = convertedRect
-        previewLayer.addSublayer(detectedLayer)
+        let captureDeviceBounds = CGRect(x: 0,
+                                         y: 0,
+                                         width: captureDeviceResolution.width,
+                                         height: captureDeviceResolution.height)
 
+        let captureDeviceBoundsCenterPoint = CGPoint(x: captureDeviceBounds.midX,
+                                                     y: captureDeviceBounds.midY)
 
+        let normalizedCenterPoint = CGPoint(x: 0.5, y: 0.5)
+        let overlayLayer = CALayer()
+        overlayLayer.name = "DetectionOverlay"
+        overlayLayer.masksToBounds = true
+        overlayLayer.anchorPoint = normalizedCenterPoint
+        overlayLayer.bounds = captureDeviceBounds
+        overlayLayer.position = captureDeviceBoundsCenterPoint//CGPoint(x: previewLayer.bounds.midX, y: previewLayer.bounds.midY)
+        overlayLayer.borderColor = UIColor.blue.cgColor
+        overlayLayer.borderWidth = 4
 
-//        for observation in faceObservations {
-//            // appleでは端末の解像度を計算している
-//            // iPhone 12 proで(4032.0, 3024.0)
-//            // 他の人がどうやっているのかが気になる。
-//            print(resolution.debugDescription) // (4032.0, 3024.0) on iPhone 12 Pro
-//            let faceBounds = VNImageRectForNormalizedRect(observation.boundingBox, Int(resolution.width), Int(resolution.height))
-//            output = .init(faceRect: faceBounds)
-//
-//            // ある方向に向けるとVisionのoutputが止まる。なんでだ？
-//
-//            let videoPreviewRect = previewLayer.layerRectConverted(fromMetadataOutputRect: CGRect(x: 0, y: 0, width: 1, height: 1))
-//
-//            var rotation: CGFloat
-//            var scaleX: CGFloat
-//            var scaleY: CGFloat
-//
-//            // Rotate the layer into screen orientation.
-//            switch UIDevice.current.orientation {
-//            case .portraitUpsideDown:
-//                rotation = 180
-//                scaleX = videoPreviewRect.width / resolution.width
-//                scaleY = videoPreviewRect.height / resolution.height
-//
-//            case .landscapeLeft:
-//                rotation = 90
-//                scaleX = videoPreviewRect.height / resolution.width
-//                scaleY = scaleX
-//
-//            case .landscapeRight:
-//                rotation = -90
-//                scaleX = videoPreviewRect.height / resolution.width
-//                scaleY = scaleX
-//
-//            default:
-//                rotation = 0
-//                scaleX = videoPreviewRect.width / resolution.width
-//                scaleY = videoPreviewRect.height / resolution.height
-//            }
-//
-//            // Scale and mirror the image to ensure upright presentation.
-//            let affineTransform = CGAffineTransform(rotationAngle: radiansForDegrees(rotation))
-//                .scaledBy(x: scaleX, y: -scaleY)
-//
-//           // previewLayer.setAffineTransform(affineTransform)
-//        }
+        let videoPreviewRect = previewLayer.layerRectConverted(fromMetadataOutputRect: CGRect(x: 0, y: 0, width: 1, height: 1))
+        var rotation: CGFloat
+        var scaleX: CGFloat
+        var scaleY: CGFloat
+
+        // Rotate the layer into screen orientation.
+        switch UIDevice.current.orientation {
+        case .portraitUpsideDown:
+            rotation = 180
+            scaleX = videoPreviewRect.width / captureDeviceResolution.width
+            scaleY = videoPreviewRect.height / captureDeviceResolution.height
+
+        case .landscapeLeft:
+            rotation = 90
+            scaleX = videoPreviewRect.height / captureDeviceResolution.width
+            scaleY = scaleX
+
+        case .landscapeRight:
+            rotation = -90
+            scaleX = videoPreviewRect.height / captureDeviceResolution.width
+            scaleY = scaleX
+
+        default:
+            rotation = 0
+            scaleX = videoPreviewRect.width / captureDeviceResolution.width
+            scaleY = videoPreviewRect.height / captureDeviceResolution.height
+        }
+
+        // Scale and mirror the image to ensure upright presentation.
+        let affineTransform = CGAffineTransform(rotationAngle: radiansForDegrees(rotation))
+            .scaledBy(x: scaleX, y: -scaleY)
+        overlayLayer.setAffineTransform(affineTransform)
+        overlayLayer.position = CGPoint(x: previewLayer.bounds.midX, y: previewLayer.bounds.midY)
+
+        previewLayer.addSublayer(overlayLayer)
+
+        guard let observation = faceObservations.first else { return }
+        let xMin = observation.boundingBox.minX
+        let yMax = observation.boundingBox.maxY
+
+        var xCoord = xMin * overlayLayer.frame.size.width
+        let yCoord = (1 - yMax) * overlayLayer.frame.size.height // これがどういうことだったかをもう一度理解する
+        let width = observation.boundingBox.width * overlayLayer.frame.size.width
+        let height = observation.boundingBox.height * overlayLayer.frame.size.height
+
+        let subfromCenter = xCoord - overlayLayer.frame.midX
+        let mirrerdMaxX = overlayLayer.frame.midX - subfromCenter
+        xCoord = mirrerdMaxX - width
+
+        let layer = CALayer()
+        layer.frame = CGRect(x: xMin * overlayLayer.frame.size.width + overlayLayer.frame.minX, y: yCoord, width: width, height: height)
+        layer.borderWidth = 2.0
+        layer.borderColor = UIColor.green.cgColor
+
+        previewLayer.addSublayer(layer)
     }
 
     fileprivate func radiansForDegrees(_ degrees: CGFloat) -> CGFloat {
