@@ -9,13 +9,12 @@ import SwiftUI
 
 struct TrackingView: View {
     @StateObject var viewModel = TrackingViewModel()
-    var closePath: Bool = true
     var body: some View {
         #if targetEnvironment(simulator)
         Text("please run on real device")
         #else
         ZStack {
-            CustomLayerView(previewLayer: viewModel.previewLayer, detectedRect: $viewModel.detectedRects, pixelSize: $viewModel.pixelSize)
+            PreviewLayerView(previewLayer: viewModel.previewLayer, detectedRect: $viewModel.detectedRects, pixelSize: $viewModel.pixelSize)
         }
         .edgesIgnoringSafeArea(.all)
         .onAppear {

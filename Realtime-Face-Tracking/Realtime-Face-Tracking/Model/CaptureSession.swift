@@ -29,6 +29,7 @@ final class CaptureSession: NSObject, ObservableObject {
     override init() {
         super.init()
         setupCaptureSession()
+
     }
 
     /// MARK: - Create capture session

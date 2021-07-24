@@ -9,7 +9,7 @@ import SwiftUI
 import AVFoundation
 /// UIViewRepresentableを使うとview.frameがzeroになりlayerが描画されない。
 /// UIViewControllerRepresentableを利用するとviewController.viewは端末サイズが与えられる
-struct CustomLayerView: UIViewControllerRepresentable {
+struct PreviewLayerView: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIViewController
     var previewLayer: AVCaptureVideoPreviewLayer
     @Binding var detectedRect: [CGRect]

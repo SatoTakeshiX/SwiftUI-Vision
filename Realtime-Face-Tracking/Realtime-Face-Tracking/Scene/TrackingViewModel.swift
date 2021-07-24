@@ -50,7 +50,7 @@ final class TrackingViewModel: ObservableObject {
         visionClient.$visionObjectObservations
             .receive(on: RunLoop.main)
             .map { observations -> [CGRect] in
-                return observations.map { $0.boundingBox}
+                return observations.map { $0.boundingBox }
             }
             .assign(to: &$detectedRects)
     }
