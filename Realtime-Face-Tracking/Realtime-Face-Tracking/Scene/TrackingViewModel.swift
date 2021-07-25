@@ -31,10 +31,7 @@ final class TrackingViewModel: ObservableObject {
     func bind() {
         captureSession.outputs.map { output -> ([VNImageOption: AnyObject], CVImageBuffer, CGSize) in
             var requestHandlerOptions: [VNImageOption: AnyObject] = [:]
-            let cameraIntrinsicData = CMGetAttachment(output.pixelBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil)
-            if cameraIntrinsicData != nil {
-                requestHandlerOptions[VNImageOption.cameraIntrinsics] = cameraIntrinsicData
-            }
+            requestHandlerOptions[VNImageOption.cameraIntrinsics] = output.cameraIntrinsicData
             return (requestHandlerOptions, output.pixelBuffer, output.pixelBufferSize)
         }
         .receive(on: RunLoop.main)
@@ -42,7 +39,7 @@ final class TrackingViewModel: ObservableObject {
             guard let self = self else { return }
             self.pixelSize = pixelSize
             self.visionClient.request(cvPixelBuffer: pixelBuffer,
-                                      orientation: self.exifOrientationForDeviceOrientation(UIDevice.current.orientation),
+                                      orientation: self.makeOrientation(with: UIDevice.current.orientation),
                                       options: options)
         }
         .store(in: &cancellables)
@@ -59,7 +56,7 @@ final class TrackingViewModel: ObservableObject {
         captureSession.startSettion()
     }
 
-    func exifOrientationForDeviceOrientation(_ deviceOrientation: UIDeviceOrientation) -> CGImagePropertyOrientation {
+    func makeOrientation(with deviceOrientation: UIDeviceOrientation) -> CGImagePropertyOrientation {
 
         switch deviceOrientation {
         case .portraitUpsideDown:

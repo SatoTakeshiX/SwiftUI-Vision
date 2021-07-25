@@ -93,7 +93,7 @@ final class CaptureSession: NSObject, ObservableObject {
         let videoDataOutput = AVCaptureVideoDataOutput()
 
         videoDataOutput.videoSettings = [
-            (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA,
+            (kCVPixelBufferPixelFormatTypeKey as String): kCVPixelFormatType_32BGRA
         ]
         // frame落ちたら捨てる処理
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
