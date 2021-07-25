@@ -28,8 +28,10 @@ struct PreviewLayerView: UIViewControllerRepresentable {
     }
 
     func drawFaceObservations(_ detectedRects: [CGRect]) {
+        // sublayerを削除
         previewLayer.sublayers?.removeSubrange(1...)
 
+        // pixelSizeで矩形作成
         let captureDeviceBounds = CGRect(x: 0,
                                          y: 0,
                                          width: pixelSize.width,
@@ -42,6 +44,7 @@ struct PreviewLayerView: UIViewControllerRepresentable {
                                         y: captureDeviceBounds.midY)
 
         print("overlay: befor: \(overlayLayer.frame)")
+        //
         let videoPreviewRect = previewLayer.layerRectConverted(fromMetadataOutputRect: CGRect(x: 0, y: 0, width: 1, height: 1))
 
         let (rotation, scaleX, scaleY) = makerotationAndScale(videoPreviewRect: videoPreviewRect, pixelSize: pixelSize)
@@ -56,17 +59,13 @@ struct PreviewLayerView: UIViewControllerRepresentable {
             let xMin = detectedRect.minX
             let yMax = detectedRect.maxY
 
-            var xCoord = xMin * overlayLayer.frame.size.width
-            let yCoord = (1 - yMax) * overlayLayer.frame.size.height // layerRectConvertedで0,0よりもマイナス値でX座標が始まっていた。その分を引く
-            let width = detectedRect.width * overlayLayer.frame.size.width
-            let height = detectedRect.height * overlayLayer.frame.size.height
-
-            let subfromCenter = xCoord - overlayLayer.frame.midX
-            let mirrerdMaxX = overlayLayer.frame.midX - subfromCenter
-            xCoord = mirrerdMaxX - width
+            let detectedX = xMin * overlayLayer.frame.size.width + overlayLayer.frame.minX
+            let detectedY = (1 - yMax) * overlayLayer.frame.size.height
+            let detectedWidth = detectedRect.width * overlayLayer.frame.size.width
+            let detectedHeight = detectedRect.height * overlayLayer.frame.size.height
 
             let layer = CALayer()
-            layer.frame = CGRect(x: xMin * overlayLayer.frame.size.width + overlayLayer.frame.minX, y: yCoord, width: width, height: height)
+            layer.frame = CGRect(x: detectedX, y: detectedY, width: detectedWidth, height: detectedHeight)
             layer.borderWidth = 2.0
             layer.borderColor = UIColor.green.cgColor
             return layer
