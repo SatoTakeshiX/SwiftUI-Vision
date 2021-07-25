@@ -45,8 +45,9 @@ final class VisionClient: NSObject, ObservableObject {
                 } catch {
                     print(error.localizedDescription)
                 }
-                // Setup the next round of tracking.
 
+                // 次のトラッキングを設定
+                // perform実行後はresultsプロパティが更新されている
                 let newTrackingRequests = trackingRequests.compactMap { request -> VNTrackObjectRequest? in
                     guard let results = request.results else {
                         return nil
@@ -72,7 +73,7 @@ final class VisionClient: NSObject, ObservableObject {
                 state = .tracking(trackingRequests: newTrackingRequests)
 
                 if newTrackingRequests.isEmpty {
-                    // Nothing to track, so abort.
+                    // トラックするものがない
                     self.visionObjectObservations = []
                     return
                 }
@@ -85,7 +86,7 @@ final class VisionClient: NSObject, ObservableObject {
     }
 
     private func setup() {
-        let faceDetectionRequest = prepareVisionRequest() { [weak self] result in
+        let faceDetectionRequest = prepareRequest() { [weak self] result in
             switch result {
                 case .success(let trackingRequests):
                     self?.state = .tracking(trackingRequests: trackingRequests)
@@ -100,11 +101,9 @@ final class VisionClient: NSObject, ObservableObject {
     }
 
     // MARK: Performing Vision Requests
-
-    /// - Tag: WriteCompletionHandler
-    fileprivate func prepareVisionRequest(completion: @escaping (Result<[VNTrackObjectRequest], Error>) -> Void) -> VNDetectFaceRectanglesRequest {
+    private func prepareRequest(completion: @escaping (Result<[VNTrackObjectRequest], Error>) -> Void) -> VNDetectFaceRectanglesRequest {
         var requests = [VNTrackObjectRequest]()
-        let faceDetectionRequest = VNDetectFaceRectanglesRequest(completionHandler: { (request, error) in
+        let faceRequest = VNDetectFaceRectanglesRequest(completionHandler: { (request, error) in
             if let error = error {
                 completion(.failure(error))
             }
@@ -114,15 +113,15 @@ final class VisionClient: NSObject, ObservableObject {
             }
 
             // Add the observations to the tracking list
-            for observation in results {
-                let faceTrackingRequest = VNTrackObjectRequest(detectedObjectObservation: observation)
+            for obs in results {
+                let faceTrackingRequest = VNTrackObjectRequest(detectedObjectObservation: obs)
                 requests.append(faceTrackingRequest)
             }
             self.trackingRequests = requests
             completion(.success(requests))
 
         })
-        return faceDetectionRequest
+        return faceRequest
     }
 
     private func initialRequest(cvPixelBuffer pixelBuffer: CVPixelBuffer, orientation: CGImagePropertyOrientation, options: [VNImageOption : Any] = [:]) {
