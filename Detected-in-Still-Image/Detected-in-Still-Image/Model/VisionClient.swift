@@ -357,7 +357,15 @@ final class VisionClient: ObservableObject {
             let topRightY = rect.topRight.y * bounds.height
             let topRight = CGPoint(x: topRightX, y: topRightY)
 
-            rectPoints.append([true: [topLeft, topRight]])
+            let bottomLeftX = rect.bottomLeft.x * bounds.width
+            let bottomLeftY = rect.bottomLeft.y * bounds.height
+            let bottomLeft = CGPoint(x: bottomLeftX, y: bottomLeftY)
+
+            let bottomRightX = rect.bottomRight.x * bounds.width
+            let bottomRightY = rect.bottomRight.y * bounds.height
+            let bottomRight = CGPoint(x: bottomRightX, y: bottomRightY)
+
+            rectPoints.append([true: [topLeft, topRight, bottomRight, bottomLeft]])
 
         }
         return rectPoints
