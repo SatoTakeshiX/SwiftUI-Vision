@@ -64,6 +64,8 @@ final class DetectorViewModel: ObservableObject {
             .store(in: &errorCancellables)
 
         imageViewFramePublisher.removeDuplicates().combineLatest(originImagePublisher)
+            .prefix(2)
+            .last()
             .sink { (imageRect, originImageArg) in
                 let (cgImage, detectType) = originImageArg
                 let fullImageWidth = CGFloat(cgImage.width)
