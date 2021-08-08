@@ -16,7 +16,7 @@ enum VisionRequestTypes {
     case character(rectBox: [CGRect], info: [[String: String]])
     case textRecognize(info: [[String: String]])
     case barcode(rectBox: [CGRect], info: [[String: String]])
-    case rect(rectBox: [CGRect], info: [[String: String]])
+    case rect(drawPoints: [[Bool: [CGPoint]]], info: [[String: String]])
 
     struct Set: OptionSet {
         typealias Element = VisionRequestTypes.Set
@@ -267,14 +267,9 @@ final class VisionClient: ObservableObject {
                 return
             }
 
-            let rectBoxes = results.map { observation -> CGRect in
-                let rectBox = self.boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: self.imageViewFrame)
-                print("detected Rec: \(rectBox.debugDescription)")
-                return rectBox
-            }
-
+            let points = self.makeRectanglePoints(onRects: results, onImageWithBounds: self.imageViewFrame)
             let info = ["detected count": "\(results.count)"]
-            self.result = .rect(rectBox: rectBoxes, info: [info])
+            self.result = .rect(drawPoints: points, info: [info])
         }
 
         return rectDetectRequest
@@ -347,6 +342,25 @@ final class VisionClient: ObservableObject {
         }
 
         return landmarkPoints
+    }
+
+    private func makeRectanglePoints(onRects rects: [VNRectangleObservation],
+                                     onImageWithBounds bounds: CGRect) -> [[Bool: [CGPoint]]] {
+        var rectPoints: [[Bool: [CGPoint]]] = []
+
+        for rect in rects {
+            let topLeftX = rect.topLeft.x * bounds.width
+            let topLeftY = rect.topLeft.y * bounds.height
+            let topLeft = CGPoint(x: topLeftX, y: topLeftY)
+
+            let topRightX = rect.topRight.x * bounds.width
+            let topRightY = rect.topRight.y * bounds.height
+            let topRight = CGPoint(x: topRightX, y: topRightY)
+
+            rectPoints.append([true: [topLeft, topRight]])
+
+        }
+        return rectPoints
     }
 
     // MARK: - Text Detection
