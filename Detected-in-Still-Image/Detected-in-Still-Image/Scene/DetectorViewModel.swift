@@ -48,6 +48,8 @@ final class DetectorViewModel: ObservableObject {
                     case .rect(let drawPoints, let info):
                         self.detectedFaceLandmarkPoints = drawPoints
                         self.detectedInfo = info
+                    case .rectBoundingBoxes(let rectBoxes):
+                        self.detectedFrame = rectBoxes
                     default:
                         break
                 }

@@ -16,6 +16,7 @@ enum VisionRequestTypes {
     case character(rectBox: [CGRect], info: [[String: String]])
     case textRecognize(info: [[String: String]])
     case barcode(rectBox: [CGRect], info: [[String: String]])
+    case rectBoundingBoxes(rectBox: [CGRect])
     case rect(drawPoints: [[Bool: [CGPoint]]], info: [[String: String]])
 
     struct Set: OptionSet {
@@ -267,11 +268,18 @@ final class VisionClient: ObservableObject {
                 return
             }
 
+            let rectBoxes = results.map { observation -> CGRect in
+                let rectBox = self.boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: self.imageViewFrame)
+                return rectBox
+            }
+
             let points = self.makeRectanglePoints(onRects: results, onImageWithBounds: self.imageViewFrame)
             let info = ["detected count": "\(results.count)"]
             self.result = .rect(drawPoints: points, info: [info])
+            self.result = .rectBoundingBoxes(rectBox: rectBoxes)
         }
-
+        rectDetectRequest.maximumObservations = 0
+        rectDetectRequest.minimumSize = 0.4
         return rectDetectRequest
     }()
 
