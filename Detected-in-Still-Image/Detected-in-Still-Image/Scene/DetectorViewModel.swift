@@ -71,9 +71,9 @@ final class DetectorViewModel: ObservableObject {
                 let fullImageWidth = CGFloat(cgImage.width)
                 let fullImageHeight = CGFloat(cgImage.height)
                 let targetWidh = imageRect.width
-                let rate = fullImageWidth / targetWidh
+                let ratio = fullImageWidth / targetWidh
 
-                let imageFrame = CGRect(x: 0, y: 0, width: imageRect.width, height: fullImageHeight / rate)
+                let imageFrame = CGRect(x: 0, y: 0, width: imageRect.width, height: fullImageHeight / ratio)
                 self.visionClient.configure(type: detectType, imageViewFrame: imageFrame)
 
                 print(cgImage)
