@@ -29,7 +29,7 @@ public struct DetectorView: View {
                             path.addRect(frame)
                         }
                     }
-                    .stroke(Color.blue, lineWidth: 2.0)
+                    .stroke(Color.green, lineWidth: 2.0)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
                 .overlay(
@@ -43,7 +43,7 @@ public struct DetectorView: View {
                             }
                         }
                     }
-                    .stroke(Color.blue, lineWidth: 1)
+                    .stroke(Color.blue, lineWidth: 2.0)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
                 .overlay(

@@ -45,9 +45,11 @@ final class DetectorViewModel: ObservableObject {
                     case .barcode(let rectBoxes, let info):
                         self.detectedFrame = rectBoxes
                         self.detectedInfo = info
-                    case .rect(let rectBoxes, let info):
-                        self.detectedFrame = rectBoxes
+                    case .rect(let drawPoints, let info):
+                        self.detectedFaceLandmarkPoints = drawPoints
                         self.detectedInfo = info
+                    case .rectBoundingBoxes(let rectBoxes):
+                        self.detectedFrame = rectBoxes
                     default:
                         break
                 }
@@ -62,6 +64,8 @@ final class DetectorViewModel: ObservableObject {
             .store(in: &errorCancellables)
 
         imageViewFramePublisher.removeDuplicates().combineLatest(originImagePublisher)
+            .prefix(2)
+            .last()
             .sink { (imageRect, originImageArg) in
                 let (cgImage, detectType) = originImageArg
                 let fullImageWidth = CGFloat(cgImage.width)
