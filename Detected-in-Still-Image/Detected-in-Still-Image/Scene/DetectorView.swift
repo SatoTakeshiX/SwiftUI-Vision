@@ -72,7 +72,7 @@ struct DetectedInfomationView: View {
         List {
             ForEach(info.indices, id: \.self) { index in
                 Section(header: Text("index \(index)")) {
-                    ForEach(Array(info[index].keys), id: \.self) { key in
+                    ForEach(Array(info[index].keys.sorted()), id: \.self) { key in
                         HStack {
                             Text("\(key)")
                             Spacer()
