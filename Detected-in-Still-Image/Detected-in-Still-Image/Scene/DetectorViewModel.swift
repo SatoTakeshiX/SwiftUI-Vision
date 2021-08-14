@@ -15,7 +15,7 @@ final class DetectorViewModel: ObservableObject {
 
     @Published var image: UIImage = UIImage()
     @Published var detectedFrame: [CGRect] = []
-    @Published var detectedFaceLandmarkPoints: [[Bool: [CGPoint]]] = []
+    @Published var detectedFaceLandmarkPoints: [(closed: Bool, points: [CGPoint])] = []
     @Published var detectedInfo: [[String: String]] = []
     private var cancellables: Set<AnyCancellable> = []
     private var errorCancellables: Set<AnyCancellable> = []

@@ -11,13 +11,13 @@ import Vision
 enum VisionRequestTypes {
     case unknown
     case faceRect(rectBox: [CGRect], info: [[String: String]])
-    case faceLandmarks(drawPoints: [[Bool: [CGPoint]]], info: [[String: String]])
+    case faceLandmarks(drawPoints: [(closed: Bool, points: [CGPoint])], info: [[String: String]])
     case word(rectBox: [CGRect], info: [[String: String]])
     case character(rectBox: [CGRect], info: [[String: String]])
     case textRecognize(info: [[String: String]])
     case barcode(rectBox: [CGRect], info: [[String: String]])
     case rectBoundingBoxes(rectBox: [CGRect])
-    case rect(drawPoints: [[Bool: [CGPoint]]], info: [[String: String]])
+    case rect(drawPoints: [(closed: Bool, points: [CGPoint])], info: [[String: String]])
 
     struct Set: OptionSet {
         typealias Element = VisionRequestTypes.Set
@@ -304,8 +304,8 @@ final class VisionClient: ObservableObject {
         return rect
     }
 
-    private func makeFaceFeaturesPoints(onFaces faces: [VNFaceObservation], onImageWithBounds bounds: CGRect) -> [[Bool: [CGPoint]]] {
-        var landmarkPoints: [[Bool: [CGPoint]]] = []
+    private func makeFaceFeaturesPoints(onFaces faces: [VNFaceObservation], onImageWithBounds bounds: CGRect) -> [(Bool, [CGPoint])] {
+        var landmarkPoints: [(Bool, [CGPoint])] = []
         
         for face in faces {
             let faceBounds = boundingBox(forRegionOfInterest: face.boundingBox, withinImageBounds: bounds)
@@ -330,20 +330,20 @@ final class VisionClient: ObservableObject {
                 landmarks.nose
                 ].compactMap { $0 }
 
-            let openLandmarkPoints = openLandmarkRegions.compactMap { region -> [Bool: [CGPoint]]? in
+            let openLandmarkPoints = openLandmarkRegions.compactMap { region -> (Bool, [CGPoint])? in
                 guard let points = self.makeNormalizedPoints(region: region, faceBounds: faceBounds) else {
                     return nil
                 }
-                return [false: points]
+                return (false, points)
             }
 
             landmarkPoints += openLandmarkPoints
 
-            let closedLandmarksPoints = closedLandmarkRegions.compactMap { region -> [Bool: [CGPoint]]? in
+            let closedLandmarksPoints = closedLandmarkRegions.compactMap { region -> (Bool, [CGPoint])? in
                 guard let points = self.makeNormalizedPoints(region: region, faceBounds: faceBounds) else {
                     return nil
                 }
-                return [true: points]
+                return (true, points)
             }
 
             landmarkPoints += closedLandmarksPoints
@@ -353,8 +353,8 @@ final class VisionClient: ObservableObject {
     }
 
     private func makeRectanglePoints(onRects rects: [VNRectangleObservation],
-                                     onImageWithBounds bounds: CGRect) -> [[Bool: [CGPoint]]] {
-        var rectPoints: [[Bool: [CGPoint]]] = []
+                                     onImageWithBounds bounds: CGRect) -> [(closed: Bool, points: [CGPoint])] {
+        var rectPoints: [(closed: Bool, points: [CGPoint])] = []
 
         for rect in rects {
             let topLeftX = rect.topLeft.x * bounds.width
@@ -373,7 +373,7 @@ final class VisionClient: ObservableObject {
             let bottomRightY = rect.bottomRight.y * bounds.height
             let bottomRight = CGPoint(x: bottomRightX, y: bottomRightY)
 
-            rectPoints.append([true: [topLeft, topRight, bottomRight, bottomLeft]])
+            rectPoints.append((closed: true, points: [topLeft, topRight, bottomRight, bottomLeft]))
 
         }
         return rectPoints
