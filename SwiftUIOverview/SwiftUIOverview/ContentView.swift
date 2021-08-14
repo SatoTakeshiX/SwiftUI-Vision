@@ -17,8 +17,8 @@ struct ContentView: View {
                 .aspectRatio(contentMode: .fit)
                 .opacity(0.6)
                 .overlay(
-                    // for retrieve image frame
                     GeometryReader { proxy -> AnyView in
+                        // 画像座標を取得
                         viewModel.input(imageFrame: proxy.frame(in: .local))
                         return AnyView(EmptyView())
                     }
@@ -54,7 +54,6 @@ struct ContentView: View {
 final class ContentViewModel: ObservableObject {
     @Published var imageFrameLabel: String = ""
     private var imageViewFramePublisher = PassthroughSubject<CGRect, Never>()
-    private var subscriber: Set<AnyCancellable> = []
     init() {
         imageViewFramePublisher.removeDuplicates()
             .map { rect in
