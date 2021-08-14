@@ -53,10 +53,10 @@ struct ContentView: View {
 
 final class ContentViewModel: ObservableObject {
     @Published var imageFrameLabel: String = ""
-    private var imageViewFramePublisher = PassthroughSubject<CGRect, Never>()
+    // private var imageViewFramePublisher = PassthroughSubject<CGRect, Never>()
     private var subscriber: Set<AnyCancellable> = []
     init() {
-        imageViewFramePublisher.removeDuplicates()
+        $imageFrameLabel.removeDuplicates()
             .map { rect in
                 rect.debugDescription
             }
@@ -64,8 +64,8 @@ final class ContentViewModel: ObservableObject {
     }
     func input(imageFrame: CGRect) {
         print(imageFrame.debugDescription)
-        //imageFrameLabel = imageFrame.debugDescription
-        imageViewFramePublisher.send(imageFrame)
+        imageFrameLabel = imageFrame.debugDescription
+        //imageViewFramePublisher.send(imageFrame)
     }
 }
 
