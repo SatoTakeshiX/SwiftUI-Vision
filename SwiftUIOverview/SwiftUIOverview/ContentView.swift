@@ -56,11 +56,11 @@ final class ContentViewModel: ObservableObject {
     // private var imageViewFramePublisher = PassthroughSubject<CGRect, Never>()
     private var subscriber: Set<AnyCancellable> = []
     init() {
-        $imageFrameLabel.removeDuplicates()
-            .map { rect in
-                rect.debugDescription
-            }
-            .assign(to: &$imageFrameLabel)
+//        $imageFrameLabel.removeDuplicates()
+//            .map { rect in
+//                rect.debugDescription
+//            }
+//            .assign(to: &$imageFrameLabel)
     }
     func input(imageFrame: CGRect) {
         print(imageFrame.debugDescription)
