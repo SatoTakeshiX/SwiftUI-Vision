@@ -24,6 +24,13 @@ public struct DetectorView: View {
                 .aspectRatio(contentMode: .fit)
                 .opacity(0.6)
                 .overlay(
+                    // 画像Viewの座標情報を取得
+                    GeometryReader { proxy -> AnyView in
+                        viewModel.input(imageFrame: proxy.frame(in: .local))
+                        return AnyView(EmptyView())
+                    }
+                )
+                .overlay(
                     Path { path in
                         for frame in viewModel.detectedFrame {
                             path.addRect(frame)
@@ -45,16 +52,10 @@ public struct DetectorView: View {
                     .stroke(Color.blue, lineWidth: 2.0)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
-                .overlay(
-                    // for retrieve image frame
-                    GeometryReader { proxy -> AnyView in
-                        viewModel.input(imageFrame: proxy.frame(in: .local))
-                        return AnyView(EmptyView())
-                    }
-                )
             DetectedInfomationView(info: viewModel.detectedInfo)
         }
         .onAppear {
+            // 画像情報と検出タイプをViewModelに渡す
             viewModel.onAppear(image: image, detectType: detectType)
         }
     }

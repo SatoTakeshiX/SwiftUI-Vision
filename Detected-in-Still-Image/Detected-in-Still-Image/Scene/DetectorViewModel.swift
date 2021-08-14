@@ -63,9 +63,11 @@ final class DetectorViewModel: ObservableObject {
             }
             .store(in: &errorCancellables)
 
-        imageViewFramePublisher.removeDuplicates().combineLatest(originImagePublisher)
+        imageViewFramePublisher
+            .removeDuplicates()
             .prefix(2)
             .last()
+            .combineLatest(originImagePublisher)
             .sink { (imageRect, originImageArg) in
                 let (cgImage, detectType) = originImageArg
                 let fullImageWidth = CGFloat(cgImage.width)
@@ -95,10 +97,13 @@ final class DetectorViewModel: ObservableObject {
             print("Trying to show an image not backed by CGImage!")
             return
         }
+        // 画像情報をイベントとして送信
         originImagePublisher.send((cgImage, detectType))
     }
 
     func input(imageFrame: CGRect) {
+        // ImageViewの矩形情報をイベントとして送信
+        // 複数回呼ばれる可能性がある
        imageViewFramePublisher.send(imageFrame)
     }
 
