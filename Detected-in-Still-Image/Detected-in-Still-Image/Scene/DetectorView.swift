@@ -34,9 +34,10 @@ public struct DetectorView: View {
                 )
                 .overlay(
                     Path { path in
-                        for (closed, points) in viewModel.detectedFaceLandmarkPoints {
+                        for (closed, points) in viewModel.detectedPoints {
                             path.addLines(points)
                             if closed {
+                                // パスを閉じる
                                 path.closeSubpath()
                             }
                         }
