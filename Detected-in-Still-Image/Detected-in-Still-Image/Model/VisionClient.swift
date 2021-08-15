@@ -273,7 +273,7 @@ final class VisionClient: ObservableObject {
                 return rectBox
             }
 
-            let points = self.makeRectanglePoints(onRects: results, onImageWithBounds: self.imageViewFrame)
+            let points = self.makeRectanglePoints(observations: results, onImageWithBounds: self.imageViewFrame)
             let info = ["detected count": "\(results.count)"]
             self.result = .rect(drawPoints: points, info: [info])
             self.result = .rectBoundingBoxes(rectBox: rectBoxes)
@@ -352,25 +352,25 @@ final class VisionClient: ObservableObject {
         return landmarkPoints
     }
 
-    private func makeRectanglePoints(onRects rects: [VNRectangleObservation],
+    private func makeRectanglePoints(observations : [VNRectangleObservation],
                                      onImageWithBounds bounds: CGRect) -> [(closed: Bool, points: [CGPoint])] {
         var rectPoints: [(closed: Bool, points: [CGPoint])] = []
 
-        for rect in rects {
-            let topLeftX = rect.topLeft.x * bounds.width
-            let topLeftY = rect.topLeft.y * bounds.height
+        for obs in observations {
+            let topLeftX = obs.topLeft.x * bounds.width
+            let topLeftY = obs.topLeft.y * bounds.height
             let topLeft = CGPoint(x: topLeftX, y: topLeftY)
 
-            let topRightX = rect.topRight.x * bounds.width
-            let topRightY = rect.topRight.y * bounds.height
+            let topRightX = obs.topRight.x * bounds.width
+            let topRightY = obs.topRight.y * bounds.height
             let topRight = CGPoint(x: topRightX, y: topRightY)
 
-            let bottomLeftX = rect.bottomLeft.x * bounds.width
-            let bottomLeftY = rect.bottomLeft.y * bounds.height
+            let bottomLeftX = obs.bottomLeft.x * bounds.width
+            let bottomLeftY = obs.bottomLeft.y * bounds.height
             let bottomLeft = CGPoint(x: bottomLeftX, y: bottomLeftY)
 
-            let bottomRightX = rect.bottomRight.x * bounds.width
-            let bottomRightY = rect.bottomRight.y * bounds.height
+            let bottomRightX = obs.bottomRight.x * bounds.width
+            let bottomRightY = obs.bottomRight.y * bounds.height
             let bottomRight = CGPoint(x: bottomRightX, y: bottomRightY)
 
             rectPoints.append((closed: true, points: [topLeft, topRight, bottomRight, bottomLeft]))
