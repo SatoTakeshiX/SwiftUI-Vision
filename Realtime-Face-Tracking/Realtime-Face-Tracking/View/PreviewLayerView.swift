@@ -11,9 +11,9 @@ import AVFoundation
 /// UIViewControllerRepresentableを利用するとviewController.viewは端末サイズが与えられる
 struct PreviewLayerView: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIViewController
-    var previewLayer: AVCaptureVideoPreviewLayer
-    @Binding var detectedRect: [CGRect]
-    @Binding var pixelSize: CGSize
+    let previewLayer: AVCaptureVideoPreviewLayer
+    let detectedRect: [CGRect]
+    let pixelSize: CGSize
 
     func makeUIViewController(context: Context) -> UIViewController {
         let viewController = UIViewController()
