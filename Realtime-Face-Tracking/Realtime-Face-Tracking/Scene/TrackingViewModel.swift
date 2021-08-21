@@ -29,20 +29,20 @@ final class TrackingViewModel: ObservableObject {
     @Published var pixelSize: CGSize = .zero
 
     func bind() {
-        captureSession.outputs.map { output -> ([VNImageOption: AnyObject], CVImageBuffer, CGSize) in
-            var requestHandlerOptions: [VNImageOption: AnyObject] = [:]
-            requestHandlerOptions[VNImageOption.cameraIntrinsics] = output.cameraIntrinsicData
-            return (requestHandlerOptions, output.pixelBuffer, output.pixelBufferSize)
-        }
-        .receive(on: RunLoop.main)
-        .sink { [weak self] (options, pixelBuffer, pixelSize) in
-            guard let self = self else { return }
-            self.pixelSize = pixelSize
-            self.visionClient.request(cvPixelBuffer: pixelBuffer,
-                                      orientation: self.makeOrientation(with: UIDevice.current.orientation),
-                                      options: options)
-        }
-        .store(in: &cancellables)
+        captureSession.outputs
+            .receive(on: RunLoop.main)
+            .sink { [weak self] output in
+                guard let self = self else { return }
+                var requestHandlerOptions: [VNImageOption: AnyObject] = [:]
+                // 内部データをVisionリクエストにオプションとして設定
+                requestHandlerOptions[VNImageOption.cameraIntrinsics] = output.cameraIntrinsicData
+                // 画像サイズは保持する
+                self.pixelSize = output.pixelBufferSize
+                self.visionClient.request(cvPixelBuffer: output.pixelBuffer,
+                                          orientation: self.makeOrientation(with: UIDevice.current.orientation),
+                                          options: requestHandlerOptions)
+            }
+            .store(in: &cancellables)
 
         visionClient.$visionObjectObservations
             .receive(on: RunLoop.main)
