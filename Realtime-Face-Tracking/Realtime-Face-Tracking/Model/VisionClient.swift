@@ -21,7 +21,6 @@ final class VisionClient: NSObject, ObservableObject {
 
     // Vision requests
     private var detectionRequests: [VNDetectFaceRectanglesRequest]? // output
-    private var trackingRequests: [VNTrackObjectRequest]? // output
     private var subscriber: Set<AnyCancellable> = []
 
     private lazy var sequenceRequestHandler = VNSequenceRequestHandler()
@@ -90,7 +89,6 @@ final class VisionClient: NSObject, ObservableObject {
             switch result {
                 case .success(let trackingRequests):
                     self?.state = .tracking(trackingRequests: trackingRequests)
-                    self?.trackingRequests = trackingRequests
                 case .failure(let error):
                     print("FaceDetection error: \(String(describing: error)).")
             }
@@ -117,7 +115,6 @@ final class VisionClient: NSObject, ObservableObject {
                 let faceTrackingRequest = VNTrackObjectRequest(detectedObjectObservation: obs)
                 requests.append(faceTrackingRequest)
             }
-            self.trackingRequests = requests
             completion(.success(requests))
 
         })
