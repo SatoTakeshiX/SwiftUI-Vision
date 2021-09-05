@@ -24,6 +24,13 @@ public struct DetectorView: View {
                 .aspectRatio(contentMode: .fit)
                 .opacity(0.6)
                 .overlay(
+                    // 画像Viewの座標情報を取得
+                    GeometryReader { proxy -> AnyView in
+                        viewModel.input(imageFrame: proxy.frame(in: .local))
+                        return AnyView(EmptyView())
+                    }
+                )
+                .overlay(
                     Path { path in
                         for frame in viewModel.detectedFrame {
                             path.addRect(frame)
@@ -34,28 +41,21 @@ public struct DetectorView: View {
                 )
                 .overlay(
                     Path { path in
-                        for element in viewModel.detectedFaceLandmarkPoints {
-                            for (closed, points) in element {
-                                path.addLines(points)
-                                if closed {
-                                    path.closeSubpath()
-                                }
+                        for (closed, points) in viewModel.detectedPoints {
+                            path.addLines(points)
+                            if closed {
+                                // パスを閉じる
+                                path.closeSubpath()
                             }
                         }
                     }
                     .stroke(Color.blue, lineWidth: 2.0)
                     .scaleEffect(x: 1.0, y: -1.0, anchor: .center)
                 )
-                .overlay(
-                    // for retrieve image frame
-                    GeometryReader { proxy -> AnyView in
-                        viewModel.input(imageFrame: proxy.frame(in: .local))
-                        return AnyView(EmptyView())
-                    }
-                )
             DetectedInfomationView(info: viewModel.detectedInfo)
         }
         .onAppear {
+            // 画像情報と検出タイプをViewModelに渡す
             viewModel.onAppear(image: image, detectType: detectType)
         }
     }
@@ -74,7 +74,7 @@ struct DetectedInfomationView: View {
         List {
             ForEach(info.indices, id: \.self) { index in
                 Section(header: Text("index \(index)")) {
-                    ForEach(Array(info[index].keys), id: \.self) { key in
+                    ForEach(Array(info[index].keys.sorted()), id: \.self) { key in
                         HStack {
                             Text("\(key)")
                             Spacer()

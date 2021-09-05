@@ -15,7 +15,7 @@ final class DetectorViewModel: ObservableObject {
 
     @Published var image: UIImage = UIImage()
     @Published var detectedFrame: [CGRect] = []
-    @Published var detectedFaceLandmarkPoints: [[Bool: [CGPoint]]] = []
+    @Published var detectedPoints: [(closed: Bool, points: [CGPoint])] = []
     @Published var detectedInfo: [[String: String]] = []
     private var cancellables: Set<AnyCancellable> = []
     private var errorCancellables: Set<AnyCancellable> = []
@@ -29,7 +29,7 @@ final class DetectorViewModel: ObservableObject {
             .sink { type in
                 switch type {
                     case .faceLandmarks(let drawPoints, let info):
-                        self.detectedFaceLandmarkPoints = drawPoints
+                        self.detectedPoints = drawPoints
                         self.detectedInfo = info
                     case .faceRect(let rectBox, let info):
                         self.detectedFrame = rectBox
@@ -46,7 +46,7 @@ final class DetectorViewModel: ObservableObject {
                         self.detectedFrame = rectBoxes
                         self.detectedInfo = info
                     case .rect(let drawPoints, let info):
-                        self.detectedFaceLandmarkPoints = drawPoints
+                        self.detectedPoints = drawPoints
                         self.detectedInfo = info
                     case .rectBoundingBoxes(let rectBoxes):
                         self.detectedFrame = rectBoxes
@@ -63,9 +63,11 @@ final class DetectorViewModel: ObservableObject {
             }
             .store(in: &errorCancellables)
 
-        imageViewFramePublisher.removeDuplicates().combineLatest(originImagePublisher)
+        imageViewFramePublisher
+            .removeDuplicates()
             .prefix(2)
             .last()
+            .combineLatest(originImagePublisher)
             .sink { (imageRect, originImageArg) in
                 let (cgImage, detectType) = originImageArg
                 let fullImageWidth = CGFloat(cgImage.width)
@@ -95,10 +97,13 @@ final class DetectorViewModel: ObservableObject {
             print("Trying to show an image not backed by CGImage!")
             return
         }
+        // 画像情報をイベントとして送信
         originImagePublisher.send((cgImage, detectType))
     }
 
     func input(imageFrame: CGRect) {
+        // ImageViewの矩形情報をイベントとして送信
+        // 複数回呼ばれる可能性がある
        imageViewFramePublisher.send(imageFrame)
     }
 
@@ -118,7 +123,7 @@ final class DetectorViewModel: ObservableObject {
 
     private func clearAllInfo() {
         detectedFrame.removeAll()
-        detectedFaceLandmarkPoints.removeAll()
+        detectedPoints.removeAll()
         detectedInfo.removeAll()
     }
 }

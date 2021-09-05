@@ -19,16 +19,8 @@ final class VisionClient: NSObject, ObservableObject {
     @Published var visionObjectObservations: [VNDetectedObjectObservation] = []
     @Published var state: State = .stop
 
-    // Vision requests
-    private var detectionRequests: [VNDetectFaceRectanglesRequest]? // output
-    private var trackingRequests: [VNTrackObjectRequest]? // output
     private var subscriber: Set<AnyCancellable> = []
-
     private lazy var sequenceRequestHandler = VNSequenceRequestHandler()
-    override init() {
-        super.init()
-        setup()
-    }
 
     func request(cvPixelBuffer pixelBuffer: CVPixelBuffer, orientation: CGImagePropertyOrientation, options: [VNImageOption : Any] = [:]) {
 
@@ -85,21 +77,6 @@ final class VisionClient: NSObject, ObservableObject {
         }
     }
 
-    private func setup() {
-        let faceDetectionRequest = prepareRequest() { [weak self] result in
-            switch result {
-                case .success(let trackingRequests):
-                    self?.state = .tracking(trackingRequests: trackingRequests)
-                    self?.trackingRequests = trackingRequests
-                case .failure(let error):
-                    print("FaceDetection error: \(String(describing: error)).")
-            }
-        }
-
-        self.detectionRequests = [faceDetectionRequest]
-        self.sequenceRequestHandler = VNSequenceRequestHandler()
-    }
-
     // MARK: Performing Vision Requests
     private func prepareRequest(completion: @escaping (Result<[VNTrackObjectRequest], Error>) -> Void) -> VNDetectFaceRectanglesRequest {
         var requests = [VNTrackObjectRequest]()
@@ -117,7 +94,6 @@ final class VisionClient: NSObject, ObservableObject {
                 let faceTrackingRequest = VNTrackObjectRequest(detectedObjectObservation: obs)
                 requests.append(faceTrackingRequest)
             }
-            self.trackingRequests = requests
             completion(.success(requests))
 
         })
@@ -130,10 +106,15 @@ final class VisionClient: NSObject, ObservableObject {
                                                         orientation: orientation,
                                                         options: options)
         do {
-            guard let detectRequests = self.detectionRequests else {
-                return
+            let faceDetectionRequest = prepareRequest() { [weak self] result in
+                switch result {
+                    case .success(let trackingRequests):
+                        self?.state = .tracking(trackingRequests: trackingRequests)
+                    case .failure(let error):
+                        print("error: \(String(describing: error)).")
+                }
             }
-            try imageRequestHandler.perform(detectRequests)
+            try imageRequestHandler.perform([faceDetectionRequest])
         } catch let error as NSError {
             NSLog("Failed to perform FaceRectangleRequest: %@", error)
         }
