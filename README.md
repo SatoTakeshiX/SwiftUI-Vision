@@ -4,6 +4,9 @@ VisionフレームワークをSwiftUIで実装したサンプルアプリ
 
 ## Detected-in-Still-Image
 
+![chapter3_01](https://user-images.githubusercontent.com/4253490/132113953-e689f6cb-fd24-492c-9ca7-17bbabf9fbaa.png)
+
+
 静的画像をVisionで画像解析します。
 
 ### 対応しているRequest
@@ -27,5 +30,8 @@ VisionフレームワークをSwiftUIで実装したサンプルアプリ
 
 カメラフレームからリアルタイムで顔を検知します。
 
-TBD
+![chapter4_01](https://user-images.githubusercontent.com/4253490/132113966-058f7ace-5de1-4d21-bbd1-dcf5e4aca218.png)
+
+* VNTrackObjectRequest
+   * 連続するフレーム画像で物体を追跡するリクエスト
 
