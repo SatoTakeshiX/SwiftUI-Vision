@@ -50,7 +50,7 @@ final class CaptureSession: NSObject, ObservableObject {
             }
         }
 
-        makePreviewLayser(session: captureSession)
+        makePreviewLayer(session: captureSession)
 
         // ここだけcombine。TODO: fix later
         cancellable = NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
@@ -78,7 +78,7 @@ final class CaptureSession: NSObject, ObservableObject {
         captureSession.stopRunning()
     }
 
-    private func makePreviewLayser(session: AVCaptureSession) {
+    private func makePreviewLayer(session: AVCaptureSession) {
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.name = "CameraPreview"
         previewLayer.videoGravity = .resizeAspectFill
